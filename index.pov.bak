@@ -151,7 +151,7 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
 //Sapin         
 #declare Feuilles_Sapin = cone
 {   
-    <0,0,0>1.5, <0,3.5,0>0.2
+    <0,0,0>1.5, <0,3.5,0>0.1
 }
   
 #declare Tronc = cylinder
