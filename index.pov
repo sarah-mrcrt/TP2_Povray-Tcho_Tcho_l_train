@@ -5,7 +5,8 @@
 * + moi
 * Structuration des scripts
 */
-
+                      
+                      
 //********************************* Réglages *******************************
 #version 3.7;  
 global_settings { assumed_gamma 2.0 }
@@ -18,26 +19,28 @@ global_settings { assumed_gamma 2.0 }
 #include "woods.inc"
 #include "glass.inc"
 #include "stars.inc"
-#include "stones.inc"              
+#include "stones.inc" 
+                        
+                        
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
 // Caméra //
   camera {     
     right x * image_width/image_height
     up y
-    location <7, 2, 30>
-    look_at <0, 3, 0>
-    angle 30   
+    location <4, 5, 10>
+    look_at <-3,1,0>
+    angle 50   
     
   }
 // Lumières //
 // Lumière de type soleil       
 light_source {
-    <20000, 2000, 20000>
+    <200, 200, 200>
     color White
 }
 // AXES X Y Z //
-/*
+
 cylinder { //X
     <0,0,0>, <100,0,0>, 0.01
     pigment { Red }
@@ -53,12 +56,13 @@ cylinder { //Z
     pigment { Blue }
     finish { ambient 1 }
 }
-*/                 
+                
 
 
 //********************************* Conception de la scène
 //**** 1 - Modelisation (formes, materiaux) // 
-/* Forme géométrique */
+/* Forme géométrique */   
+
 // Rails //
 #declare Traverse = box
 {
@@ -108,6 +112,8 @@ cylinder { //Z
     object { Traverse }
     object { Fer translate <0,0,1>}
 }         
+
+
 // ARBRES //              
 //Sapin         
 #declare SapinFeuilles = cone {<0,0,0>1.5, <0,3.5,0>0.2 }
@@ -118,10 +124,71 @@ cylinder { //Z
     <0,0,0>2
 } 
 #declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0>0.3 }
+       
+       
+//TRAIN  
+
+//Bandes bleues
+#declare Pattern_Object_1= union
+{ 
+    object{ Round_Box (<-10,-0.5,-3.0>,<0,1.3,-0.5>,0.2,0) }  
+    object{ Round_Box(<-10,-0.5, 0.5>,<0,1.3, 3.0>,0.2,0) }  
+}               
+
+//Couleurs blanc et bleu
+#declare Object_Pigment_1 = pigment
+{ 
+    object { Pattern_Object_1
+        color rgb<1,1,1> //Interieur Blanc
+        color rgb<0,0.7,0.9> //Bandes bleues
+    }
+}
+#declare Body_Texture_1 = texture
+{ 
+    pigment{ Object_Pigment_1 } 
+    finish { phong 0.5 }
+} 
+      
+      
+//Toit gris
+#declare Pattern_Object_2 = box { <-10,2.25,-3>,<0,3,3> }  
+
+//Couleurs toit gris
+#declare Object_Pigment_2 = pigment
+{ 
+    object { Pattern_Object_2
+        color rgbf<1,1,1,1> //ne pas toucher
+        color rgb<0.7,0.7,0.7>*0.5//Toit gris 
+    }
+}
+#declare Body_Texture_2 = texture 
+{ 
+    pigment{ Object_Pigment_2 }
+    finish { phong 0.5 }
+}
+
+//Superposition de texture 
+#declare Body_Texture =
+ texture{ Body_Texture_1 } 
+ texture{ Body_Texture_2 }
+
+//Train 
+#declare Train =
+union{ 
+  object{ Round_Box(<-3,0,-0.75>,<0,3,0.75>,0.5,0)
+          matrix<1, 0, 0, // shear_y_to_x 
+              -0.5, 1, 0,
+                 0, 0, 1,
+                 0, 0, 0>
+        } //       
+  object{ Round_Box(<-5,0,-0.75>,<0,3,0.75>,0.5,0)  
+          translate<-1.5,0,0.00>
+        }     
+  scale<1,1,3>  
+}  
 
  
- 
-/* Matériaux */
+/* Matériaux (création des textures) */  
 #declare SoucheArbre =  
 material {
 texture{
@@ -191,4 +258,5 @@ plane {
 // TRAIN // 
 // ARBRES //     
 //object { Sapin }
-object { Acacia }
+//object { Acacia }   
+object { Train texture{ Body_Texture } }
