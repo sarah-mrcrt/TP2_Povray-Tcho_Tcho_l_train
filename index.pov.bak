@@ -31,24 +31,24 @@ assumed_gamma 2.0
 texture{
     pigment{ 
         color rgb< 0.75, 0.5, 0.30>*0.25}
-        normal{bumps 0.75 scale<0.025,0.075,0.025>}
-        finish { phong 0.2 }
+        normal { bumps 2 scale<0.025,0.075,0.025>}
+        finish { phong 0.003 }
         }     
         
 #declare Feuilles_Texture_1 =
 texture{
     pigment{
         color rgbf<0.2,0.5,0, 0.1>*0.75}
-        normal { bumps 0.15 scale 0.05 }
-        finish { phong 1 }
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
         }
         
 #declare Feuilles_Texture_2 =
 texture{
     pigment{
-        color rgbf<0.2,0.5,0, 0.2>*0.25}
-        normal { bumps 0.15 scale 0.05 }
-        finish { phong 0.2 }
+        color rgbf<0.2,0.5,0, 0.1>*0.75}
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
         }
 
 
@@ -70,35 +70,39 @@ cylinder { //Z
     pigment { Blue }
     finish { ambient 1 }
 }
-*/
+*/ 
+   
 //********************************* CAMERA *********************************
-  camera {
-    location <7, 0, 30>
-    look_at <0, 5, 0>
-    angle 50
+  camera {     
+    right x * image_width/image_height
+    up y
+    location <7, 2, 30>
+    look_at <0, 3, 0>
+    angle 30   
+    
   }
-
+      
+      
 //********************************* LUMIERE + BG + SOL *********************************
-/*
-light_source {
-    <1500, 1500, 0>
-    color White
-}     
-*/         
-light_source {
-    <7, 18, 30>
-    color White
-    area_light <5, 0, 0>, <0, 0, 5>, 5, 5
-    adaptive 1
-    jitter
-  }
 
+light_source {
+    <20000, 2000, 20000>
+    color White
+}
   
 background {
     color Gray50
-}
-plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
+}                  
 
+plane { 
+    y, 0
+    pigment {
+        checker
+        color rgb<1,1,1> 
+        color <.7,.7,.7> } 
+    }
+                 
+                 
 //********************************* RAIL *********************************
 // Traverse
 #declare Traverse = box
@@ -111,15 +115,17 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
       rotate <0, 90, 0>
     }
 }
-
+  
+/*  
 #declare Traverses = union
 {
     object { Traverse }
     object { Traverse translate <0,0,1>}
-}
+}   
+*/
 
 // Rail
-#declare Rail = prism
+#declare Fer = prism
 {
     bezier_spline
     linear_sweep
@@ -143,7 +149,11 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
     pigment{ color DarkBrown }
 }
          
-         
+#declare Rail = union
+{
+    object { Traverse }
+    object { Fer translate <0,0,1>}
+}         
                
 
               
@@ -151,7 +161,7 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
 //Sapin         
 #declare Feuilles_Sapin = cone
 {   
-    <0,0,0>1.5, <0,3.5,0>0.1
+    <0,0,0>1.5, <0,3.5,0>0.2
 }
   
 #declare Tronc = cylinder
@@ -167,6 +177,22 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
     object { Tronc texture{ Tronc_Texture }}
 }
 
+//Acacia         
+#declare Boule = sphere
+{   
+    <0,0,0>2
+}
+  
+#declare Tronc = cylinder
+{
+    <0,0,0>, <0,3.5,0>0.3        
+}
+
+#declare Acacia = union
+{
+    object { Boule translate <0,4,0> texture { Feuilles_Texture_2 }}    
+    object { Tronc texture{ Tronc_Texture }}
+}
 
 
 
@@ -181,4 +207,4 @@ plane { y, 0 pigment { checker color rgb<1,1,1> color <.7,.7,.7> } }
          
          
 /******************************** OBJETS ********************************/
-object { Sapin }
+object { Acacia }
