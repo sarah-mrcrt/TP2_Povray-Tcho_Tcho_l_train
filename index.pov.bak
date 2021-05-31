@@ -28,8 +28,8 @@ global_settings { assumed_gamma 2.0 }
   camera {     
     right x * image_width/image_height
     up y
-    location <4, 5, 10>
-    look_at <-3,1,0>
+    location <30, 10, 30>
+    look_at <0,2,0>
     angle 50   
     
   }
@@ -38,7 +38,8 @@ global_settings { assumed_gamma 2.0 }
 light_source {
     <200, 200, 200>
     color White
-}
+}  
+
 // AXES X Y Z //
 
 cylinder { //X
@@ -127,65 +128,47 @@ cylinder { //Z
        
        
 //TRAIN  
-
-//Bandes bleues
-#declare Pattern_Object_1= union
+/*#declare Cylindre = cylinder
 { 
-    object{ Round_Box (<-10,-0.5,-3.0>,<0,1.3,-0.5>,0.2,0) }  
-    object{ Round_Box(<-10,-0.5, 0.5>,<0,1.3, 3.0>,0.2,0) }  
-}               
-
-//Couleurs blanc et bleu
-#declare Object_Pigment_1 = pigment
-{ 
-    object { Pattern_Object_1
-        color rgb<1,1,1> //Interieur Blanc
-        color rgb<0,0.7,0.9> //Bandes bleues
-    }
+    <0,0,0>,<0,2,0>, 0.5 
+    pigment{color rgb<1,0.6,0>} 
+    rotate <0,0,-90>  
+    translate <0,0.65,0>
 }
-#declare Body_Texture_1 = texture
+#declare Cube_Moteur = box
 { 
-    pigment{ Object_Pigment_1 } 
-    finish { phong 0.5 }
-} 
-      
-      
-//Toit gris
-#declare Pattern_Object_2 = box { <-10,2.25,-3>,<0,3,3> }  
+    <0,0,0>,<1,1.25,1>
+    pigment{
+        color rgb<1,0.6,0> }
+        finish { phong 3 }  
+    translate <-0.5,0,-0.5>
+}*/   
+#declare Train = prism
+{
+    bezier_spline
+    linear_sweep
+    0, 4, 4*9,
+    <0.8,0>, <0.32,0>, <0,0.48>, <0,0.8>,
+    <0,0.8>, <0,0.8>, <0,3.2>, <0,3.2>, 
+    <0,3.2>, <0,3.68>, <0.48,4>, <0.8,4>, 
+    <0.8,4>, <0.8,4>, <10.6,4>, <10.6,4>, 
+    <10.6,4>, <11.2,4>, <11.6,3.72>, <11.8,3.53>, 
+    <11.8,3.53>, <11.96,3.4>, <12.57,2.78>, <13.13,2.15>,
+    <13.13,2.15>, <13.6,1.66>, <13.88,1.02>, <13.85,0.8>,
+    <13.85,0.8>, <13.81,0.51>, <13.25,0.04>, <12.5,0>, 
+    <12.5,0>, <12.5,0>, <0.8,0>, <0.8,0>
 
-//Couleurs toit gris
-#declare Object_Pigment_2 = pigment
-{ 
-    object { Pattern_Object_2
-        color rgbf<1,1,1,1> //ne pas toucher
-        color rgb<0.7,0.7,0.7>*0.5//Toit gris 
-    }
-}
-#declare Body_Texture_2 = texture 
-{ 
-    pigment{ Object_Pigment_2 }
-    finish { phong 0.5 }
-}
-
-//Superposition de texture 
-#declare Body_Texture =
- texture{ Body_Texture_1 } 
- texture{ Body_Texture_2 }
-
-//Train 
-#declare Train =
-union{ 
-  object{ Round_Box(<-3,0,-0.75>,<0,3,0.75>,0.5,0)
-          matrix<1, 0, 0, // shear_y_to_x 
-              -0.5, 1, 0,
-                 0, 0, 1,
-                 0, 0, 0>
-        } //       
-  object{ Round_Box(<-5,0,-0.75>,<0,3,0.75>,0.5,0)  
-          translate<-1.5,0,0.00>
+    rotate <-90,0,0>
+    translate <0,0,4>
+    
+    texture {
+        pigment{ 
+            color rgb <1,1,1>*1.2}
         }     
-  scale<1,1,3>  
-}  
+}
+
+
+
 
  
 /* Matériaux (création des textures) */  
@@ -243,7 +226,7 @@ texture{
 //*** 4 - Mise en scène  //
 // Scène //    
 background {
-    color Gray50
+    color rgb<0.7,0.9,1>
 }                  
 
 plane { 
@@ -259,4 +242,4 @@ plane {
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
-object { Train texture{ Body_Texture } }
+object { Train }

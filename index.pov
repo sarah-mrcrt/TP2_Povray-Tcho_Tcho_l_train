@@ -127,22 +127,7 @@ cylinder { //Z
 #declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0>0.3 }
        
        
-//TRAIN  
-/*#declare Cylindre = cylinder
-{ 
-    <0,0,0>,<0,2,0>, 0.5 
-    pigment{color rgb<1,0.6,0>} 
-    rotate <0,0,-90>  
-    translate <0,0.65,0>
-}
-#declare Cube_Moteur = box
-{ 
-    <0,0,0>,<1,1.25,1>
-    pigment{
-        color rgb<1,0.6,0> }
-        finish { phong 3 }  
-    translate <-0.5,0,-0.5>
-}*/   
+//TRAIN     
 #declare Train = prism
 {
     bezier_spline
@@ -157,6 +142,29 @@ cylinder { //Z
     <13.13,2.15>, <13.6,1.66>, <13.88,1.02>, <13.85,0.8>,
     <13.85,0.8>, <13.81,0.51>, <13.25,0.04>, <12.5,0>, 
     <12.5,0>, <12.5,0>, <0.8,0>, <0.8,0>
+
+    rotate <-90,0,0>
+    translate <0,0,4>
+    
+    texture {
+        pigment{ 
+            color rgb <1,1,1>*1.2}
+        }     
+} 
+//WAGON     
+#declare Wagon = prism
+{
+    bezier_spline
+    linear_sweep
+    0, 4, 4*8,
+    <0.8,0>, <0.32,0>, <0,0.48>, <0,0.8>,
+    <0,0.8>, <0,0.8>, <0,3.2>, <0,3.2>, 
+    <0,3.2>, <0,3.68>, <0.48,4>, <0.8,4>, 
+    <0.8,4>, <0.8,4>, <9.2,4>, <9.2,4>,  
+    <9.2,4>, <9.68,4>, <10,3.52>, <10,3.2>, 
+    <10,3.2>, <10,3.2>, <10,0.8>, <10,0.8>,
+    <10,0.8>, <10,0.32>, <9.52,0>, <9.2,0>,    
+    <9.2,0>, <9.2,0>, <0.8,0>, <0.8,0>
 
     rotate <-90,0,0>
     translate <0,0,4>
@@ -242,4 +250,4 @@ plane {
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
-object { Train }
+object { Wagon }
