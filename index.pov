@@ -28,17 +28,28 @@ global_settings { assumed_gamma 2.0 }
   camera {     
     right x * image_width/image_height
     up y
-    location <30, 10, 30>
-    look_at <0,2,0>
-    angle 50   
+    location <5,5,-25>
+    look_at<5,2,2>
+    angle 30   
     
   }
-// Lumières //
+// Lumières //  
+light_source {
+    <5, 3, 2>
+    color Red
+    spotlight
+    radius 15
+    falloff 20
+    tightness 10
+    point_at <5, 0, 2>
+  }            
+
 // Lumière de type soleil       
 light_source {
-    <200, 200, 200>
+    <200, 200, -200>
     color White
 }  
+
 
 // AXES X Y Z //
 
@@ -152,7 +163,7 @@ cylinder { //Z
         }     
 } 
 //WAGON     
-#declare Wagon = prism
+#declare Parois = prism
 {
     bezier_spline
     linear_sweep
@@ -164,24 +175,19 @@ cylinder { //Z
     <9.2,4>, <9.68,4>, <10,3.52>, <10,3.2>, 
     <10,3.2>, <10,3.2>, <10,0.8>, <10,0.8>,
     <10,0.8>, <10,0.32>, <9.52,0>, <9.2,0>,    
-    <9.2,0>, <9.2,0>, <0.8,0>, <0.8,0>
+    <9.2,0>, <9.2,0>, <0.8,0>, <0.8,0>  
+}   
 
-    rotate <-90,0,0>
-    translate <0,0,4>
-    
-    texture {
-        pigment{ 
-            color rgb <1,1,1>*1.2}
-        }     
-}
-
+         
+//Fenetre Wagon
+#declare Encadrement = box{ <0,0,0>, <3,1,0.6> } 
+#declare Vitre = box{ <0,0,0>, <2.8,0.8,0.3> } 
 
 
 
  
 /* Matériaux (création des textures) */  
-#declare SoucheArbre =  
-material {
+#declare SoucheArbre =  material {
 texture{
     pigment{ 
         color rgb< 0.75, 0.5, 0.30>*0.25}
@@ -205,7 +211,19 @@ texture{
         finish { phong_size 0.003 }
         }    
         
-      }            
+      }
+#declare BoisBlanc =  material {
+texture{
+    pigment{ color Wheat }     
+     }
+} 
+      
+// Transparent   
+#declare VerreMinerale = material { texture { T_Glass3 }  }   
+// Couleurs
+#declare BlancNeige = material { texture { pigment { color White*1.1 } finish { ambient 1} } }
+
+          
       
 //**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //
 // Sapin
@@ -213,7 +231,13 @@ texture{
 #declare SapinTronc_SoucheArbre = object { SapinTronc material { SoucheArbre }  } 
 // Acacia
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
-#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  }
+#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  }            
+// Fênetre
+#declare Encadrement_White = object { Encadrement material { BlancNeige } } 
+#declare Vitre_Verre = object { Vitre material { VerreMinerale } } 
+#declare Vitre_Verre2 = object { Vitre texture{ Lightning1  finish { phong 1 } scale 50 rotate <0,0,-5>} }
+//Train
+#declare ParoisBlanc = object { Parois material { BoisBlanc } }
 
 //**** 3 - Assemblage // 
 #declare Sapin = union
@@ -229,6 +253,35 @@ texture{
     object { AcaciaFeuilles_Texture translate <0,4,0> }    
     object { AcaciaTronc_SoucheArbre }
 }
+
+// Fenetre
+# declare FenetreWagon = union
+{    
+    difference 
+    { 
+        object { Encadrement_White } 
+        object { Vitre_Verre translate <0.1,0.1,-0.1> } 
+        object { Vitre_Verre translate <0.1,0.1,0.2> }
+        object { Vitre_Verre translate <0.1,0.1,0.4> }
+    }    
+    object { Vitre_Verre2  translate <0.1,0.1,0.15> }    
+}       
+     
+//Parois du Wagon     
+#declare ParoisWagon = difference {
+    object { ParoisBlanc }
+    object { ParoisBlanc scale 0.8 translate <0.4,0.4,0.4>}
+    rotate <-90,0,0> translate <0,0,4> 
+}
+//Wagon
+#declare Wagon = difference {
+     object { ParoisWagon }
+     object { FenetreWagon translate <1,3,-0.3>} 
+     object { FenetreWagon translate <0,0,0>}
+} 
+
+ 
+
 
                        
 //*** 4 - Mise en scène  //
@@ -250,4 +303,5 @@ plane {
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
+//object { Wagon }        
 object { Wagon }
