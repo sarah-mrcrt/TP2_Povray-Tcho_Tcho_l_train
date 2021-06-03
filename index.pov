@@ -28,21 +28,13 @@ global_settings { assumed_gamma 2.0 }
   camera {     
     right x * image_width/image_height
     up y
-    location <5,5,-25>
-    look_at<5,2,2>
+    location <5,7,25>
+    look_at<5,2,0>
     angle 30   
-    
   }
 // Lumières //  
-light_source {
-    <5, 3, 2>
-    color Red
-    spotlight
-    radius 15
-    falloff 20
-    tightness 10
-    point_at <5, 0, 2>
-  }            
+
+light_source{ <5, 3.8, 2>  color Turquoise }            
 
 // Lumière de type soleil       
 light_source {
@@ -264,20 +256,23 @@ texture{
         object { Vitre_Verre translate <0.1,0.1,0.2> }
         object { Vitre_Verre translate <0.1,0.1,0.4> }
     }    
-    object { Vitre_Verre2  translate <0.1,0.1,0.15> }    
+    object { Vitre_Verre  translate <0.1,0.1,0.15> }    
 }       
      
 //Parois du Wagon     
 #declare ParoisWagon = difference {
     object { ParoisBlanc }
-    object { ParoisBlanc scale 0.8 translate <0.4,0.4,0.4>}
+    //object { Parois scale 0.8 translate <0.1,0.4,0.4>}
     rotate <-90,0,0> translate <0,0,4> 
 }
 //Wagon
 #declare Wagon = difference {
      object { ParoisWagon }
-     object { FenetreWagon translate <1,3,-0.3>} 
-     object { FenetreWagon translate <0,0,0>}
+     object { FenetreWagon translate <1,2.5,-0.3>} 
+     object { FenetreWagon translate <6,2.5,-0.3>} 
+     object { FenetreWagon translate <1,2.5,3.6>}
+     object { FenetreWagon translate <6,2.5,3.6>}
+     translate <0,1,0>
 } 
 
  
