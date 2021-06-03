@@ -24,14 +24,26 @@ global_settings { assumed_gamma 2.0 }
                         
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
-// Caméra //
+// Caméra // 
+/*
   camera {     
     right x * image_width/image_height
     up y
-    location <5,7,25>
+    location <5,7,20>
     look_at<5,2,0>
-    angle 30   
+    angle 50   
+  }    
+*/  
+
+//dedans
+  camera {     
+    right x * image_width/image_height
+    up y
+    location <1,1,2>
+    look_at<9,3.5,2>
+    angle 50   
   }
+  
 // Lumières //  
 
 light_source{ <5, 3.8, 2>  color Turquoise }            
@@ -179,35 +191,35 @@ cylinder { //Z
 
  
 /* Matériaux (création des textures) */  
-#declare SoucheArbre =  material {
-texture{
-    pigment{ 
-        color rgb< 0.75, 0.5, 0.30>*0.25}
+#declare SoucheArbre =  material 
+{
+    texture
+    {
+        pigment { color rgb< 0.75, 0.5, 0.30>*0.25}
         normal { bumps 2 scale<0.025,0.075,0.025>}
         finish { phong 0.003 }
-        }     
-      }  
+    }     
+}  
 #declare Feuilles_Texture_1 = material {
-texture{
-    pigment{
-        color rgbf<0.2,0.5,0, 0.1>*0.75}
+    texture
+    {
+        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
-        }     }
+    }     
+}
         
 #declare Feuilles_Texture_2 = material {
-    texture{
-    pigment{
-        color rgbf<0.2,0.5,0, 0.1>*0.75}
+    texture
+    {
+        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
-        }    
-        
-      }
-#declare BoisBlanc =  material {
-texture{
-    pigment{ color Wheat }     
-     }
+    }    
+}
+#declare BoisBlanc =  material 
+{
+    texture { pigment{ color Wheat } }
 } 
       
 // Transparent   
@@ -268,11 +280,9 @@ texture{
 //Wagon
 #declare Wagon = difference {
      object { ParoisWagon }
-     object { FenetreWagon translate <1,2.5,-0.3>} 
-     object { FenetreWagon translate <6,2.5,-0.3>} 
-     object { FenetreWagon translate <1,2.5,3.6>}
+
      object { FenetreWagon translate <6,2.5,3.6>}
-     translate <0,1,0>
+     //translate <0,1,0>
 } 
 
  
@@ -295,8 +305,8 @@ plane {
 }   
 // GARE //
 // TRAIN // 
+//object { Wagon }        
+object { Wagon }
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
-//object { Wagon }        
-object { Wagon }
