@@ -24,17 +24,29 @@ global_settings { assumed_gamma 2.0 }
                         
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
-// Caméra //
+// Caméra // 
+/*
   camera {     
     right x * image_width/image_height
     up y
     location <5,7,20>
     look_at<5,2,0>
     angle 50   
+  }    
+*/  
+
+//dedans
+  camera {     
+    right x * image_width/image_height
+    up y
+    location <1,1,2>
+    look_at<9,3.5,2>
+    angle 50   
   }
+  
 // Lumières //  
 
-//light_source{ <5, 3.8, 2>  color Turquoise }            
+light_source{ <5, 3.8, 2>  color Turquoise }            
 
 // Lumière de type soleil       
 light_source {
@@ -268,7 +280,8 @@ cylinder { //Z
 //Wagon
 #declare Wagon = difference {
      object { ParoisWagon }
-    
+
+     object { FenetreWagon translate <6,2.5,3.6>}
      //translate <0,1,0>
 } 
 
