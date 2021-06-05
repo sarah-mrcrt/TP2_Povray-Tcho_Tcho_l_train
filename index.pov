@@ -29,35 +29,55 @@ global_settings { assumed_gamma 2.0 }
   camera {     
     right x * image_width/image_height
     up y
-    location <40,5,-20>
-    look_at<15,1,0>
+    location <60,4,-15>
+    look_at<20,1,5>
     angle 30   
   }    
-  
+     
+
 /*
-//dedans
+//vue dans wagon
   camera {     
     right x * image_width/image_height
     up y
-    location <1,1,2>
-    look_at<9,3.5,2>
-    angle 50   
+    location <1,4.2,2>
+    look_at<10,0,2>
+    angle 70   
   }
-*/  
-// Lumières //  
+*/
+ 
 
-light_source{ <5, 4.3, 2>  color Turquoise }
-light_source{ <16, 4.3, 2>  color Turquoise }            
-
+// Lumières // 
+ 
 // Lumière de type soleil       
+
 light_source {
     <200, 200, -200>
     color White
-}  
+} 
+ 
 
-
+//Spot int wagon
+#declare SpotIntWagon = union 
+{
+    light_source{ <3.5,3.8,2> color Turquoise   
+              spotlight
+              point_at<3.5,0,2>
+              tightness 10
+              falloff 40
+            }    
+            
+    light_source{ <7.5,3.8,2> color Turquoise   
+              spotlight
+              point_at<7.5,0,2>
+              tightness 10
+              falloff 40
+            }            
+}
+                      
+                      
 // AXES X Y Z //
-
+/*
 cylinder { //X
     <0,0,0>, <100,0,0>, 0.01
     pigment { Red }
@@ -73,7 +93,7 @@ cylinder { //Z
     pigment { Blue }
     finish { ambient 1 }
 }
-                
+*/                
 
 
 //********************************* Conception de la scène
@@ -144,7 +164,7 @@ cylinder { //Z
        
        
 //TRAIN     
-#declare Train = prism
+#declare ParoisConducteur = prism
 {
     bezier_spline
     linear_sweep
@@ -158,14 +178,6 @@ cylinder { //Z
     <13.13,2.15>, <13.6,1.66>, <13.88,1.02>, <13.85,0.8>,
     <13.85,0.8>, <13.81,0.51>, <13.25,0.04>, <12.5,0>, 
     <12.5,0>, <12.5,0>, <0.8,0>, <0.8,0>
-
-    rotate <-90,0,0>
-    translate <0,0,4>
-    
-    texture {
-        pigment{ 
-            color rgb <1,1,1>*1.2}
-        }     
 }         
 
 //WAGON     
@@ -183,16 +195,14 @@ cylinder { //Z
     <10,0.8>, <10,0.32>, <9.52,0>, <9.2,0>,    
     <9.2,0>, <9.2,0>, <0.8,0>, <0.8,0>  
 }   
-
-         
+       
 //Fenetre Wagon
 #declare Encadrement = box{ <0,0,0>, <3,3,0.15> } 
 #declare Vitre = box{ <0,0,0>, <2.8,2.8,0.1> } 
 
-
-
  
-/* Matériaux (création des textures) */  
+/* Matériaux (création des textures) */ 
+ 
 #declare SoucheArbre =  material 
 {
     texture
@@ -201,7 +211,8 @@ cylinder { //Z
         normal { bumps 2 scale<0.025,0.075,0.025>}
         finish { phong 0.003 }
     }     
-}  
+} 
+ 
 #declare Feuilles_Texture_1 = material {
     texture
     {
@@ -218,19 +229,46 @@ cylinder { //Z
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
     }    
-}
-#declare BoisBlanc =  material 
-{
-    texture { pigment{ color Red } normal { bumps 0.05 } finish { phong 0.2 phong_size 0.3 } }
 } 
-      
-// Transparent   
-#declare VerreMinerale = material { texture { T_Glass3 }  }   
-// Couleurs
-#declare BlancNeige = material { texture { pigment { color White*1.1 } finish { ambient 1} } }
+
+#declare BoisRouge =  material 
+{
+    texture 
+    {
+        pigment{ color Red } 
+        normal { bumps 0.05 } 
+        finish { phong 0.2 phong_size 0.3 } 
+    }
+} 
+ 
+#declare VerreMinerale = material
+{
+    texture { T_Glass3 }
+}            
+                        
+#declare BlancNeige = material 
+{ 
+    texture 
+    { 
+        pigment { color White*1.1 } 
+        finish { ambient 1} 
+    }
+}     
+ 
+#declare Lightning = material 
+{ 
+    texture
+    { 
+    Lightning1  
+    finish { phong 3 } 
+    scale 40 
+    rotate <0,0,95> 
+    } 
+}
 
           
-      
+                          
+                          
 //**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //
 // Sapin
 #declare SapinFeuilles_Texture = object { SapinFeuilles material { Feuilles_Texture_1 }  }
@@ -241,10 +279,14 @@ cylinder { //Z
 // Fênetre
 #declare Encadrement_White = object { Encadrement material { BlancNeige } } 
 #declare Vitre_Verre = object { Vitre material { VerreMinerale } } 
-#declare Vitre_Verre2 = object { Vitre texture{ Lightning1  finish { phong 1 } scale 50 rotate <0,0,-5>} }
+#declare Vitre_Verre2 = object { Vitre material { Lightning } }
 //Train
-#declare ParoisBlanc = object { Parois material { BoisBlanc } }
-
+#declare ParoisRouge = object { Parois material { BoisRouge } }
+#declare ParoisConducteurRouge = object { ParoisConducteur material { BoisRouge } }
+                        
+                        
+                        
+                        
 //**** 3 - Assemblage // 
 #declare Sapin = union
 {
@@ -260,7 +302,7 @@ cylinder { //Z
     object { AcaciaTronc_SoucheArbre }
 }
 
-// Fenetre
+// Fenetres wagon
 # declare FenetreWagon = union
 {    
     difference 
@@ -271,23 +313,57 @@ cylinder { //Z
     }    
     object { Vitre_Verre  translate <0.1,0.1,0.025> } 
     scale <0.6,0.6,0>   
-}       
+}  
+// Fenetre conducteur
+# declare FenetreWagonConducteur = union
+{    
+    difference 
+    { 
+        object { Encadrement_White } 
+        object { Vitre_Verre2 translate <0.1,0.1,-0.025> } 
+        object { Vitre_Verre2 translate <0.1,0.1,0.08> }
+    }    
+    object { Vitre_Verre2  translate <0.1,0.1,0.025> } 
+    scale <0.6,0.6,0>   
+}
+      
+//Parois WagonConducteur  
+#declare ParoisConducteur = union {
+    object { ParoisConducteurRouge rotate <-90,0,0> translate <0,0,4> }
+    light_source { SpotIntWagon translate <3,0,0>}
+}  
      
 //Parois du Wagon     
-#declare ParoisWagon = difference {
-    object { ParoisBlanc }
-    //object { Parois scale 0.8 translate <0.1,0.4,0.4>}
-    rotate <-90,0,0> translate <0,0,4> 
+#declare ParoisWagon = union {
+    object { ParoisRouge rotate <-90,0,0> translate <0,0,4> }
+    light_source { SpotIntWagon }
 }
-//Wagon 1
+//Wagons
 #declare Wagon = difference {
-     object { ParoisWagon }
+     object { ParoisWagon } 
      object { FenetreWagon translate <1,1.5,-0.07>}
      object { FenetreWagon translate <1,1.5,3.93>} 
      object { FenetreWagon translate <4.15,1.5,-0.07>}
      object { FenetreWagon translate <4.15,1.5,3.93>}
      object { FenetreWagon translate <7.2,1.5,-0.07>}
      object { FenetreWagon translate <7.2,1.5,3.93>}
+     object { FenetreWagon rotate <0,90,0> translate <-0.07,1.5,2.9>}
+     object { FenetreWagon rotate <0,90,0> translate <9.93,1.5,2.9>}
+     translate <0,0.5,0>
+}
+
+#declare WagonConducteur = difference {
+     object { ParoisConducteur } 
+     object { FenetreWagon translate <0.8,1.5,-0.07>}
+     object { FenetreWagon translate <0.8,1.5,3.93>} 
+     object { FenetreWagon translate <3.95,1.5,-0.07>}
+     object { FenetreWagon translate <3.95,1.5,3.93>}
+     object { FenetreWagon translate <7,1.5,-0.07>}
+     object { FenetreWagon translate <7,1.5,3.93>}     
+     object { FenetreWagon translate <10,1.5,-0.07>}
+     object { FenetreWagon translate <10,1.5,3.93>}
+     object { FenetreWagon rotate <0,90,0> translate <-0.07,1.5,2.9>}
+     object { FenetreWagonConducteur rotate <0,90,43> translate <13.3,1.9,1.85> scale <1,1,2.1>}
      translate <0,0.5,0>
 } 
  
@@ -309,9 +385,10 @@ plane {
     } 
 }   
 // GARE //
-// TRAIN // 
-object { Wagon }        
-object { Wagon translate <11,0,0> }
+// TRAIN //  
+//object { Wagon }
+//object { Wagon translate <11,0,0>}        
+//object { WagonConducteur translate <22,0,0>}
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
