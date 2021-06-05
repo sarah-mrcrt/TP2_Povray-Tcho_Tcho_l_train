@@ -30,8 +30,8 @@ camera
 {     
     right x * image_width/image_height
     up y
-    location <60,3,-20>
-    look_at<18,0,6>
+    location <15,5,-27>
+    look_at<15,2,10>
     angle 30   
 }     
 
@@ -59,22 +59,28 @@ light_source {
 } 
 
 
-//Spot interieur wagon
+// Spot interieur wagon
 #declare SpotIntWagon = union 
 {
-    light_source{ <3.5,3.8,2> color Turquoise   
-              spotlight
-              point_at<3.5,0,2>
-              tightness 10
-              falloff 40
-            }    
+    light_source
+    { 
+        <3.5,3.8,2> 
+        color Turquoise   
+        spotlight
+        point_at<3.5,0,2>
+        tightness 10
+        falloff 40
+    }    
             
-    light_source{ <7.5,3.8,2> color Turquoise   
-              spotlight
-              point_at<7.5,0,2>
-              tightness 10
-              falloff 40
-            }            
+    light_source
+    { 
+        <7.5,3.8,2> 
+        color Turquoise   
+        spotlight
+        point_at <7.5,0,2>
+        tightness 10
+        falloff 40
+    }            
 }
                       
                       
@@ -102,6 +108,7 @@ cylinder { //Z
 //**** 1 - Modelisation (formes, materiaux) // 
 /* Forme géométrique */   
 
+/* 
 // Rails //
 #declare Traverse = box
 {
@@ -114,13 +121,13 @@ cylinder { //Z
     }
 }
   
-/*  
+ 
 #declare Traverses = union
 {
     object { Traverse }
     object { Traverse translate <0,0,1>}
 }   
-*/
+
 
 // Rail
 #declare Fer = prism
@@ -150,25 +157,10 @@ cylinder { //Z
 {
     object { Traverse }
     object { Fer translate <0,0,1>}
-}         
-
+} */      
   
-  
-// ARBRES //              
-//Sapin         
-#declare SapinFeuilles = cone {<0,0,0>1.5, <0,3.5,0>0.2 }
-#declare SapinTronc = cylinder { <0,0,0>, <0,3,0>0.5 }
-//Acacia         
-#declare AcaciaFeuilles = sphere
-{   
-    <0,0,0>2
-} 
-#declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0>0.3 }
-       
-  
-       
-//TRAIN//
-//WagonConducteur    
+// TRAIN //
+// Wagon du conducteur    
 #declare ParoisConducteur = prism
 {
     bezier_spline
@@ -184,9 +176,8 @@ cylinder { //Z
     <13.85,0.8>, <13.81,0.51>, <13.25,0.04>, <12.5,0>, 
     <12.5,0>, <12.5,0>, <0.8,0>, <0.8,0>
 }         
-
-//Wagon     
-#declare Parois = prism
+// Wagon des voyageurs    
+#declare ParoisVoyageur = prism
 {
     bezier_spline
     linear_sweep
@@ -199,54 +190,52 @@ cylinder { //Z
     <10,3.2>, <10,3.2>, <10,0.8>, <10,0.8>,
     <10,0.8>, <10,0.32>, <9.52,0>, <9.2,0>,    
     <9.2,0>, <9.2,0>, <0.8,0>, <0.8,0>  
-}   
-       
-//Fenetre Wagon
+}       
+// Fenetre Wagon
 #declare Encadrement = box { <0,0,0>, <3,3,0.15> } 
-#declare Vitre = box { <0,0,0>, <2.8,2.8,0.1> } 
- 
-//AttacheWagon  
-#declare AttacheWagon = Supercone (<0.0,0.0,0.0>, 0.4, 0.6, <0.0,1,0.0>, 0.6, 0.4)
-
+#declare Vitre = box { <0,0,0>, <2.8,2.8,0.1> }  
+// Attache entre les Wagons  
+#declare AttacheWagon = Supercone ( <0.0,0.0,0.0>, 0.4, 0.6, <0.0,1,0.0>, 0.6, 0.4 )
 //Roues
 #declare Chassis = box { <0,0,0>, <7,0.5,0.25> } 
 #declare Essieu = cone{ <0,0,0>,0.25,<0,0.20,0>,0.125 }
 #declare IntRoue = cylinder{ <0,0,0>,<0,0.3,0>,0.4 } 
 #declare Rayon = box { <0,0,0>, <0.7,0.32,0.1> }
 #declare TourRoue = cylinder{ <0,0,0>,<0,0.25,0>,0.6 }
- 
+// GARE //
+// ROUTE & PASSAGE A NIVEAU //
+// Route
+// Passage à niveau
+// ARBRES //              
+//Sapin         
+#declare SapinFeuilles = cone { <0,0,0> 1.5, <0,3.5,0> 0.2 }
+#declare SapinTronc = cylinder { <0,0,0>, <0,3,0> 0.5 }
+//Acacia         
+#declare AcaciaFeuilles = sphere { <0,0,0> 2 } 
+#declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0> 0.3 }        
+
  
  
 /* Matériaux (création des textures) */ 
- 
+ // Bois
 #declare SoucheArbre =  material 
 {
     texture
     {
-        pigment { color rgb< 0.75, 0.5, 0.30>*0.25}
-        normal { bumps 2 scale<0.025,0.075,0.025>}
+        pigment { color rgb < 0.75, 0.5, 0.30>*0.25 }
+        normal { bumps 2 scale <0.025,0.075,0.025> }
         finish { phong 0.003 }
     }     
-} 
- 
-#declare Feuilles_Texture_1 = material {
-    texture
-    {
-        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
-        normal { bumps 0.5 scale 0.5 }
-        finish { phong_size 0.003 }
-    }     
 }
-        
-#declare Feuilles_Texture_2 = material {
-    texture
+ #declare BoisBleu =  material 
+{
+    texture 
     {
-        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
-        normal { bumps 0.5 scale 0.5 }
-        finish { phong_size 0.003 }
-    }    
-} 
-
+        pigment{ color Blue } 
+        normal { bumps 0.25 scale <0.015,0.08,0.015>} 
+        finish { phong 0.2 phong_size 0.3 } 
+    }
+}  
 #declare BoisRouge =  material 
 {
     texture 
@@ -256,17 +245,6 @@ cylinder { //Z
         finish { phong 0.2 phong_size 0.3 } 
     }
 }     
-
-#declare BoisBleu =  material 
-{
-    texture 
-    {
-        pigment{ color Blue } 
-        normal { bumps 0.25 scale <0.015,0.08,0.015>} 
-        finish { phong 0.2 phong_size 0.3 } 
-    }
-}  
-
 #declare BoisJaune =  material 
 {
     texture 
@@ -304,12 +282,37 @@ cylinder { //Z
         finish { phong 0.2 phong_size 0.3 } 
     }
 } 
- 
-#declare VerreMinerale = material
-{
-    texture { T_Glass3 }
+// Verdure 
+#declare Feuilles_Texture_1 = material {
+    texture
+    {
+        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
+    }     
+}
+        
+#declare Feuilles_Texture_2 = material {
+    texture
+    {
+        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
+    }    
+} 
+// Transparent 
+#declare VerreMinerale = material { texture { T_Glass3 } }
+#declare VerreUV = material 
+{ 
+    texture
+    { 
+        Lightning1  
+        finish { phong 3 } 
+        scale 40 
+        rotate <0,0,95> 
+    } 
 }            
-                        
+// Couleur                        
 #declare BlancNeige = material 
 { 
     texture 
@@ -318,45 +321,136 @@ cylinder { //Z
         finish { ambient 1} 
     }
 }     
- 
-#declare Lightning = material 
-{ 
-    texture
-    { 
-    Lightning1  
-    finish { phong 3 } 
-    scale 40 
-    rotate <0,0,95> 
-    } 
-}
-
-          
+                      
                           
-                          
-//**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //
+//**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //    
+// TRAIN // 
+// Wagons
+#declare Parois_BoisRouge = object { ParoisVoyageur material { BoisRouge } }
+#declare ParoisConducteur_BoisRouge = object { ParoisConducteur material { BoisRouge } }
+#declare AttacheWagon_BoisBleu = object { AttacheWagon material { BoisBleu } }                        
+#declare Chassis_BoisJaune = object { Chassis material { BoisJaune } }
+// Fênetre
+#declare Encadrement_BlancNeige = object { Encadrement material { BlancNeige } } 
+#declare Vitre_VerreMinerale = object { Vitre material { VerreMinerale } } 
+#declare Vitre_VerreUV = object { Vitre material { VerreUV } }                        
+//Roues des wagons
+#declare Essieu_BoisBlanc = object { Essieu material { BoisBlanc } }                        
+#declare IntRoue_BoisGris = object { IntRoue material { BoisGris } } 
+#declare Rayon_BlancNeige = object { Rayon material { BlancNeige } } 
+#declare TourRoue_BoisNoir = object { TourRoue material { BoisNoir } }           
+// ARBRES //
 // Sapin
 #declare SapinFeuilles_Texture = object { SapinFeuilles material { Feuilles_Texture_1 }  }
 #declare SapinTronc_SoucheArbre = object { SapinTronc material { SoucheArbre }  } 
 // Acacia
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
-#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  }            
-// Fênetre
-#declare Encadrement_White = object { Encadrement material { BlancNeige } } 
-#declare Vitre_Verre = object { Vitre material { VerreMinerale } } 
-#declare Vitre_Verre2 = object { Vitre material { Lightning } }
-//Train
-#declare ParoisRouge = object { Parois material { BoisRouge } }
-#declare ParoisConducteurRouge = object { ParoisConducteur material { BoisRouge } }
-#declare AttacheWagonBleu = object { AttacheWagon material { BoisBleu } }                        
-#declare ChassisJaune = object { Chassis material { BoisJaune } }                        
-//Roues du train
-#declare EssieuBlanc = object { Essieu material { BoisBlanc } }                        
-#declare IntRoueGris = object { IntRoue material { BoisGris } } 
-#declare RayonBlanc = object { Rayon material { BlancNeige } } 
-#declare TourRoueNoir = object { TourRoue material { BoisNoir } } 
+#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  } 
+                      
+//**** 3 - Assemblage //  
+// TRAIN //
+// Wagon : Parois 
+#declare ParoisConducteur = union 
+{  
+    object { ParoisConducteur_BoisRouge rotate <-90,0,0> translate <0,0,4> }
+    light_source { SpotIntWagon translate <3,0,0> }  
+    object { AttacheWagon_BoisBleu scale <.5,.5,.7> rotate <0,0,90> translate <0,1,2> }
+}   
+#declare ParoisWagon = union 
+{
+    object { Parois_BoisRouge rotate <-90,0,0> translate <0,0,4> }
+    light_source { SpotIntWagon }
+    object { AttacheWagon_BoisBleu scale<.5,.5,.7> rotate y*90 translate<0,1,2> } 
+    object { AttacheWagon_BoisBleu scale<.5,.5,.7> rotate<0,0,-90> translate<10,1,2> }
+}
+// Wagon : Fenetres 
+#declare FenetreWagon = union
+{    
+    difference 
+    { 
+        object { Encadrement_BlancNeige } 
+        object { Vitre_VerreMinerale translate <0.1,0.1,-0.025> } 
+        object { Vitre_VerreMinerale translate <0.1,0.1,0.08> } 
+    }    
+    object { Vitre_VerreMinerale  translate <0.1,0.1,0.025> } 
+    scale <0.6,0.6,0>   
+} 
+#declare FenetresWagon = difference 
+{
+    object { ParoisWagon } 
+    #for (Pas, 0.45, 3, 1) 
+        object{ FenetreWagon translate <Pas*2.8,1.5, -0.07 > }  
+        object{ FenetreWagon translate <Pas*2.8,1.5,3.93> } 
+    #end 
+    object { FenetreWagon rotate <0,90,0> translate <-0.07,1.5,2.9>}
+    object { FenetreWagon rotate <0,90,0> translate <9.93,1.5,2.9>}
+    translate <1,0.5,0>
+} 
+#declare FenetreWagonConducteur = union
+{    
+    difference 
+    { 
+        object { Encadrement_BlancNeige } 
+        object { Vitre_VerreUV translate <0.1,0.1,-0.025> } 
+        object { Vitre_VerreUV translate <0.1,0.1,0.08> }
+    }    
+    object { Vitre_VerreUV  translate <0.1,0.1,0.025> } 
+    scale <0.6,0.6,0>   
+} 
+//Roues  
+#declare IntRoueRayon = union 
+{
+    object { IntRoue_BoisGris } 
+    object { Rayon_BlancNeige translate <-0.35,0,-0.05> } 
+    object { Rayon_BlancNeige translate <-0.35,0,-0.05> rotate 90 }   
+}
+#declare Roue = union 
+{
+    object { Essieu_BoisBlanc }
+    object { IntRoueRayon translate <0,0.2,0> }
+    object { TourRoue_BoisNoir translate <0,0.2,0> } 
+    rotate z*-90
+}
+#declare Roues = union
+{    
+    #for (Pas, 0, 2, 1) 
+        object{ Roue translate< 0, 0, Pas*2.5 >}  
+    #end 
+    rotate y*90 
+    translate x*1
+}  
+#declare RouesChassis = union
+{
+    object { Roues translate y*.25 }
+    object { Chassis_BoisJaune }
+}   
+// Wagons
 
-                        
-//**** 3 - Assemblage // 
+
+#declare WagonConducteur = difference 
+{
+     object { ParoisConducteur } 
+     object { FenetresWagon }
+     object { FenetreWagon } 
+     object { FenetreWagonConducteur rotate <0,90,43> translate <13.3,1.9,1.85> scale <1,1,2.1> }
+     translate <0,0.5,0>
+} 
+
+#declare WagonRoues = union
+{   
+    object { FenetresWagon }
+    object { RouesChassis translate <2.5,0.35,-0.15> } 
+    object { RouesChassis rotate <0,180,0> translate <9.5,0.35,4.15> }
+} 
+
+#declare WagonConducteurRoues = union
+{   
+    object { WagonConducteur }
+    object { RouesChassis translate <3,0.35,-0.15> } 
+    object { RouesChassis rotate <0,180,0> translate <10,0.35,4.15> }
+}
+// ARBRES //
+// Sapin
 #declare Sapin = union
 {
     object { SapinFeuilles_Texture translate <0,3.7,0> }
@@ -364,138 +458,20 @@ cylinder { //Z
     object { SapinFeuilles_Texture translate <0,1.5,0> scale 1.2 }    
     object { SapinTronc_SoucheArbre }
 }
-
+// Acacia
 #declare Acacia = union
 {
     object { AcaciaFeuilles_Texture translate <0,4,0> }    
     object { AcaciaTronc_SoucheArbre }
 }
-
-//Roues  
-#declare IntRoueRayon = union {
-    object { IntRoueGris } 
-    object { RayonBlanc translate <-0.35,0,-0.05>} 
-    object { RayonBlanc translate <-0.35,0,-0.05> rotate 90}   
-}
-
-#declare Roue = union 
-{
-    object { EssieuBlanc }
-    object { IntRoueRayon translate <0,0.2,0>}
-    object { TourRoueNoir translate <0,0.2,0>} 
-    rotate <0,0,-90>
-}
-
-#declare Roues = union
-{  
-#for (Nr, 0, 2, 1) 
-
-    object{ Roue translate< 0, 0, Nr*2.5 >} 
-
-#end 
-rotate <0,90,0> 
-translate <1,0,0>
-}  
-//Roues sur chassis
-#declare RouesChassis = union
-{
-    object { Roues translate <0,0.25,0>}
-    object { ChassisJaune }
-}
-
-// Fenetres wagon
-# declare FenetreWagon = union
-{    
-    difference 
-    { 
-        object { Encadrement_White } 
-        object { Vitre_Verre translate <0.1,0.1,-0.025> } 
-        object { Vitre_Verre translate <0.1,0.1,0.08> }
-    }    
-    object { Vitre_Verre  translate <0.1,0.1,0.025> } 
-    scale <0.6,0.6,0>   
-}  
-// Fenetre conducteur
-# declare FenetreWagonConducteur = union
-{    
-    difference 
-    { 
-        object { Encadrement_White } 
-        object { Vitre_Verre2 translate <0.1,0.1,-0.025> } 
-        object { Vitre_Verre2 translate <0.1,0.1,0.08> }
-    }    
-    object { Vitre_Verre2  translate <0.1,0.1,0.025> } 
-    scale <0.6,0.6,0>   
-}
-      
-//Parois WagonConducteur  
-#declare ParoisConducteur = union 
-{
-    object { ParoisConducteurRouge rotate <-90,0,0> translate <0,0,4> }
-    light_source { SpotIntWagon translate <3,0,0>}  
-    object { AttacheWagonBleu scale<.5,.5,.7> rotate<0,0,90> translate<0,1,2> }
-}  
-     
-//Parois du Wagon     
-#declare ParoisWagon = union 
-{
-    object { ParoisRouge rotate <-90,0,0> translate <0,0,4> }
-    light_source { SpotIntWagon }
-    object { AttacheWagonBleu scale<.5,.5,.7> rotate<0,0,90> translate<0,1,2> } 
-    object { AttacheWagonBleu scale<.5,.5,.7> rotate<0,0,-90> translate<10,1,2> }
-}
-//Wagons
-#declare Wagon = difference 
-{
-     object { ParoisWagon } 
-     object { FenetreWagon translate <1,1.5,-0.07>}
-     object { FenetreWagon translate <1,1.5,3.93>} 
-     object { FenetreWagon translate <4.15,1.5,-0.07>}
-     object { FenetreWagon translate <4.15,1.5,3.93>}
-     object { FenetreWagon translate <7.2,1.5,-0.07>}
-     object { FenetreWagon translate <7.2,1.5,3.93>}
-     object { FenetreWagon rotate <0,90,0> translate <-0.07,1.5,2.9>}
-     object { FenetreWagon rotate <0,90,0> translate <9.93,1.5,2.9>}
-     translate <1,0.5,0>
-}
-
-#declare WagonConducteur = difference 
-{
-     object { ParoisConducteur } 
-     object { FenetreWagon translate <0.8,1.5,-0.07>}
-     object { FenetreWagon translate <0.8,1.5,3.93>} 
-     object { FenetreWagon translate <3.95,1.5,-0.07>}
-     object { FenetreWagon translate <3.95,1.5,3.93>}
-     object { FenetreWagon translate <7,1.5,-0.07>}
-     object { FenetreWagon translate <7,1.5,3.93>}     
-     object { FenetreWagon translate <10,1.5,-0.07>}
-     object { FenetreWagon translate <10,1.5,3.93>}
-     object { FenetreWagon rotate <0,90,0> translate <-0.07,1.5,2.9>}
-     object { FenetreWagonConducteur rotate <0,90,43> translate <13.3,1.9,1.85> scale <1,1,2.1>}
-     translate <0,0.5,0>
-} 
-
-#declare WagonRoues = union
-{   
-    object { Wagon }
-    object { RouesChassis translate <2.5,0.35,-0.15>} 
-    object { RouesChassis rotate <0,180,0> translate <9.5,0.35,4.15>}
-} 
-
-#declare WagonConducteurRoues = union
-{   
-    object { WagonConducteur }
-    object { RouesChassis translate <3,0.35,-0.15>} 
-    object { RouesChassis rotate <0,180,0> translate <10,0.35,4.15>}
-}
-
                        
 //*** 4 - Mise en scène  //
-// Scène //    
+// SCENE //    
+// Fond
 background {
     color rgb<0.7,0.9,1>
 }                  
-
+// Sol
 plane { 
     y, 0
     pigment {
