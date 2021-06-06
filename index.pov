@@ -1,13 +1,15 @@
 /** @file index.pov
 * Travaux pratiques d'infographie
 * @author Alexandre Lavaud & Sarah Mauriaucourt
-* @date 29/12/2020 - 29/01/2021
-* + moi
+* @date 19/05/2020 - 10/06/2021
+* 
+* @animationImages +KFF250
+* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
+* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
 * Structuration des scripts
-*/           
+*/                      
 
 //ANIMATION RAPIDE : +KFF10
-                      
                       
 //********************************* Réglages *******************************
 #version 3.7;  
@@ -17,28 +19,31 @@ global_settings { assumed_gamma 2.0 }
 #include "colors.inc"
 #include "transforms.inc"
 #include "textures.inc"
-#include "shapes.inc"
+#include "shapes.inc"  
+#include "shapes2.inc"
 #include "woods.inc"
 #include "glass.inc"
 #include "stars.inc"
 #include "stones.inc" 
 #include "metals.inc"
-                        
+#include "golds.inc"
+#include "functions.inc"
+#include "math.inc"                        
                         
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
 // Caméra // 
-    /*
+    
 camera 
 {     
     right x * image_width/image_height
     up y
-    location <200,20,1>
-    look_at<200,2,1>
+    location <5,6,-10>
+    look_at<5,1,2>
     angle 60   
-}       */
+}      
 
-     
+/*     
 //Vue loin
 camera 
 {     
@@ -48,7 +53,7 @@ camera
     look_at<50,-5,-40>
     angle 60   
 }     
-  
+*/   
 
 
 /*
@@ -66,13 +71,16 @@ camera
 
 // Lumières // 
  
-// Lumière de type soleil       
+// Lumière de type soleil    
+
+light_source{<-1500,2000,2500> color White}
      
+/*     
 light_source {
     <200, 200, -200>
     color White
 } 
-          
+*/          
        
 
 // Spot interieur wagon
@@ -100,8 +108,7 @@ light_source {
 }
                       
                       
-// AXES X Y Z //
-
+// AXES X Y Z // 
 
 cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
 cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
@@ -112,6 +119,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 //**** 1 - Modelisation (formes, materiaux) // 
 /* Forme géométrique */    
 
+// Barrière
 #declare Barriere = cylinder 
 {          //5.5
   <0,0,0>, <5.5,0,0> .1
@@ -124,8 +132,6 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
   #end     
                           
 }       
-
-
 
  
 // Rails //
@@ -215,7 +221,11 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 // GARE //
 // ROUTE & PASSAGE A NIVEAU //
 // Route
-// Passage à niveau
+// Passage à niveau 
+                       
+
+
+
 // ARBRES //              
 //Sapin         
 #declare SapinFeuilles = cone { <0,0,0> 1.5, <0,3.5,0> 0.2 }
@@ -492,9 +502,11 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 //*** 4 - Mise en scène  //
 // SCENE //    
 // Fond
+
 background {
     color rgb<0.7,0.9,1>
-}                  
+}  
+
 // Sol
 plane { 
     y, 0
@@ -503,13 +515,48 @@ plane {
         color rgb<1,1,1> 
         color <.7,.7,.7> 
     } 
-}   
+} 
+   
+   
+/*
+// Ciel bleu + Herbe 
+plane{<0,1,0>,1 hollow  
+       texture{ pigment{ bozo turbulence 0.92
+                         color_map { [0.00 rgb <0.20, 0.20, 1.0>*0.9]
+                                     [0.50 rgb <0.20, 0.20, 1.0>*0.9]
+                                     [0.70 rgb <1,1,1>]
+                                     [0.85 rgb <0.25,0.25,0.25>]
+                                     [1.0 rgb <0.5,0.5,0.5>]}
+                        scale<1,1,1.5>*2.5  translate< 0,0,0>
+                       }
+                finish {ambient 1 diffuse 0} }      
+       scale 10000}
+
+// fog on the ground
+fog { fog_type   2
+      distance   500
+      color      White  
+      fog_offset 0.5
+      fog_alt    5
+      turbulence 8
+    }
+
+// ground
+plane { <0,1,0>, 0 
+        texture{ pigment{ color rgb<0.35,0.65,0.0>*0.72 }
+	         normal { bumps 0.75 scale 0.015 }
+                 finish { phong 0.1 }
+               }
+      }
+*/    
+             
+
 // GARE //
-object { Rail translate <-700,0,-0.7>}     
-object {Barriere translate <195,2,5.2> }       
-object {Barriere rotate y*180 translate <205,2,-1.2> }
+//object { Rail translate <-700,0,-0.7>}     
+//object {Barriere translate <195,2,5.2> }       
+//object {Barriere rotate y*180 translate <205,2,-1.2> }
 // TRAIN //  
-object { Train translate <clock*250,0,0> }    
+//object { Train translate <clock*250,0,0> }    
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
