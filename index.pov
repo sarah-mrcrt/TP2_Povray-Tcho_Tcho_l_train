@@ -4,7 +4,9 @@
 * @date 29/12/2020 - 29/01/2021
 * + moi
 * Structuration des scripts
-*/
+*/           
+
+//ANIMATION RAPIDE : +KFF10
                       
                       
 //********************************* Réglages *******************************
@@ -20,20 +22,33 @@ global_settings { assumed_gamma 2.0 }
 #include "glass.inc"
 #include "stars.inc"
 #include "stones.inc" 
+#include "metals.inc"
                         
                         
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
 // Caméra // 
-
+    /*
 camera 
 {     
     right x * image_width/image_height
     up y
-    location <40,4,-15>
-    look_at<-1,2,3>
-    angle 30   
+    location <200,20,1>
+    look_at<200,2,1>
+    angle 60   
+}       */
+
+     
+//Vue loin
+camera 
+{     
+    right x * image_width/image_height
+    up y
+    location <220,5,10>
+    look_at<50,-5,-40>
+    angle 60   
 }     
+  
 
 
 /*
@@ -52,12 +67,13 @@ camera
 // Lumières // 
  
 // Lumière de type soleil       
-
+     
 light_source {
     <200, 200, -200>
     color White
 } 
-
+          
+       
 
 // Spot interieur wagon
 #declare SpotIntWagon = union 
@@ -86,48 +102,46 @@ light_source {
                       
 // AXES X Y Z //
 
-/*
-cylinder { //X
-    <0,0,0>, <100,0,0>, 0.01
-    pigment { Red }
-    finish { ambient 1 }
-}
-cylinder { //Y
-    <0,0,0>, <0,100,0>, 0.01
-    pigment { Green }
-    finish { ambient 1 }
-}
-cylinder { //Z
-    <0,0,0>, <0,0,100>, 0.01
-    pigment { Blue }
-    finish { ambient 1 }
-}               
-*/
+
+cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
+cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
+cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }          
+
 
 //********************************* Conception de la scène
 //**** 1 - Modelisation (formes, materiaux) // 
-/* Forme géométrique */   
+/* Forme géométrique */    
 
-/* 
+#declare Barriere = cylinder 
+{          //5.5
+  <0,0,0>, <5.5,0,0> .1
+            
+  pigment { checker pigment { Red } pigment { White }}    
+  #if ((90*(1-(clock*2))) > 0)  
+     rotate z*90*(1-(clock*2))   
+  #else  
+     rotate z*0
+  #end     
+                          
+}       
+
+
+
+ 
 // Rails //
 #declare Traverse = box
 {
     <0, 0, 0>,
-    < 2.3, .15, .25>
+    < 5.5, .15, .25>
     texture {
       DMFDarkOak
       scale .1
       rotate <0, 90, 0>
-    }
+    }  
+    rotate <0,-90,0> 
+    translate x*.25
 }
   
- 
-#declare Traverses = union
-{
-    object { Traverse }
-    object { Traverse translate <0,0,1>}
-}   
-
 
 // Rail
 #declare Fer = prism
@@ -149,16 +163,12 @@ cylinder { //Z
     <14,1>, <14,1>, <14,0>, <14,0>,
     <14,0>, <14,0>, <0,0>, <0,0>
 
-    rotate <-90,0,0>
-
-    pigment{ color DarkBrown }
+    rotate <-90,90,0>
+    scale 0.012 
+    scale x*-42000
+    material { texture { pigment { P_Chrome5 }  }      }
 }       
-#declare Rail = union
-{
-    object { Traverse }
-    object { Fer translate <0,0,1>}
-} */      
-  
+        
 // TRAIN //
 // Wagon : Conducteur    
 #declare ParoisConducteur = prism
@@ -381,7 +391,8 @@ cylinder { //Z
     object { Essieu_BoisBlanc }
     object { IntRoueRayon translate <0,0.2,0> }
     object { TourRoue_BoisNoir translate <0,0.2,0> } 
-    rotate z*-90
+    rotate z*-90   
+    rotate 360*clock*3*x
 }
 #declare Roues = union
 {    
@@ -467,6 +478,17 @@ cylinder { //Z
     object { AcaciaTronc_SoucheArbre }
 }
                        
+#declare Rail = union
+{                            
+     #for (i,0,2000)
+         object { Traverse translate <i*0.5,0,0> }
+     #end
+    
+    object { Fer translate <0,0.15,0.5>}   
+    object { Fer translate <0,0.15,5>}
+}       					   
+					   
+					   
 //*** 4 - Mise en scène  //
 // SCENE //    
 // Fond
@@ -483,8 +505,11 @@ plane {
     } 
 }   
 // GARE //
+object { Rail translate <-700,0,-0.7>}     
+object {Barriere translate <195,2,5.2> }       
+object {Barriere rotate y*180 translate <205,2,-1.2> }
 // TRAIN //  
-object { Train }    
+object { Train translate <clock*250,0,0> }    
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
