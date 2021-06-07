@@ -6,6 +6,7 @@
 * @animationImages +KFF250
 * @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
 * @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
+*
 * Structuration des scripts
 */                      
 
@@ -13,8 +14,9 @@
                       
 //********************************* Réglages *******************************
 #version 3.7;  
-global_settings { assumed_gamma 2.0 }
-#default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }  
+global_settings { assumed_gamma 2 }
+#default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }   
+
 //********************************* Directives ****************************
 #include "colors.inc"
 #include "transforms.inc"
@@ -22,24 +24,19 @@ global_settings { assumed_gamma 2.0 }
 #include "shapes.inc"  
 #include "shapes2.inc"
 #include "woods.inc"
-#include "glass.inc"
-#include "stars.inc"
-#include "stones.inc" 
+#include "glass.inc" 
 #include "metals.inc"
-#include "golds.inc"
-#include "functions.inc"
-#include "math.inc"                        
-                        
+                                              
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
-// Caméra // 
+/* Caméra */  
     
 camera 
 {     
     right x * image_width/image_height
     up y
     location <11,10,-25>
-    look_at<11,0,5>
+    look_at <11,0,5>
     angle 60   
 }      
   
@@ -68,13 +65,26 @@ camera
     angle 70   
 }
  */
- 
+/*
+background {
+    color rgb<0.7,0.9,1>
+}  
+plane 
+{ 
+    y, 0
+    pigment {
+        checker
+        color rgb<1,1,1> 
+        color <.7,.7,.7> 
+    } 
+} 
+*/ 
 
-// Lumières // 
-// Lumière de type soleil    
-light_source{<-1500,2000,-2500> color White} 
-
-// Spot interieur wagon
+/* Lumières */ 
+// SOLEIL //
+light_source { <-1500,2000,-2500> color White } 
+// SPOT //
+// Intérieur wagon
 #declare SpotIntWagon = union 
 {
     light_source
@@ -96,8 +106,7 @@ light_source{<-1500,2000,-2500> color White}
         falloff 40
     }            
 }
-
-// Spot Gare
+// Intérieur Gare
 #declare SpotGare = union 
 {
     light_source
@@ -119,68 +128,50 @@ light_source{<-1500,2000,-2500> color White}
         falloff 10
     }            
 }
-
-// Sol 
-
-background {
-    color rgb<0.7,0.9,1>
-}  
-
-// Sol
-plane { 
-    y, 0
-    pigment {
-        checker
-        color rgb<1,1,1> 
-        color <.7,.7,.7> 
-    } 
-} 
-
-/*
-plane { 
+/* Sol */ 
+#declare Herbe = plane 
+{ 
     y, 0
     texture
     {
-        pigment { color rgb<0.35,0.65,0.0>*0.72 }
+        pigment { color rgb <0.35,0.65,0.0>*0.72 }
         normal { bumps 0.75 scale 0.015 }
         finish { phong 0.1 }
     }
 }      
-*/
+/* Arrière-plan */
 #declare Ciel = plane
 {
-    <0,1,0>,1 hollow  
+    y, 1 hollow  
     texture
     {    
         pigment
         { 
             bozo turbulence 0.92
-            color_map { 
-                [0.00 rgb <0.20, 0.20, 1.0>*0.9]
-                [0.50 rgb <0.20, 0.20, 1.0>*0.9]
-                [0.70 rgb <1,1,1>]
-                [0.85 rgb <0.25,0.25,0.25>]
-                [1.0 rgb <0.5,0.5,0.5>]
+            color_map 
+            { 
+                [ 0 rgb <.2, .2, 1>*0.9 ]
+                [ 0.5 rgb <.2, 0.2, 1>*0.9 ]
+                [ 0.7 rgb <1,1,1> ]              
+                [ 0.85 rgb <.25,.25,.25> ]
+                [ 1 rgb <.5,.5,.5> ]
             }
-            scale<1,1,1.5>*2.5  translate< 0,0,0>
+            scale <1,1,1.5>*2.5
         }
-        finish {ambient 1 diffuse 0} 
+        finish { ambient 1 } 
     }      
     scale 10000
 }   
 #declare Brouillard = fog 
 { 
-    fog_type   2
-    distance   500
-    color      White  
+    fog_type 2
+    distance 500
+    color White  
     fog_offset 0.5
-    fog_alt    5
+    fog_alt 5
     turbulence 8
-}   
-
-                      
-// AXES X Y Z // 
-
+}                         
+/* AXES X,Y,Z */ 
 cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
 cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
 cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }          
@@ -188,30 +179,11 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 
 //********************************* Conception de la scène
 //**** 1 - Modelisation (formes, materiaux) // 
-/* Forme géométrique */    
-// ROUTE & PASSAGE A NIVEAU //
-// Route 
-// Barrière //
-#declare Barriere = cylinder 
-{          
-    //5.5
-    <0,0,0>, <5.5,0,0> .1     
-    pigment { checker pigment { Red } pigment { White }}    
-    #if ((90*(1-(clock*2))) > 0)  
-     rotate z*90*(1-(clock*2))   
-    #else  
-     rotate z*0
-    #end                            
-}       
-// Rails // 
+/* Forme géométrique */ 
+//----- RÉSEAU FERROVIAIRE -----//        
+// RAILS // 
 // Traverse
-#declare Traverse = box
-{
-    <0, 0, 0>,
-    < 5.5, .15, .25>
-    rotate <0,-90,0> 
-    translate x*.25  
-}
+#declare Traverse = box { <0, 0, 0>, < 5.5, .15, .25> }
 // Fer
 #declare Fer = prism
 {
@@ -230,12 +202,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     <9,9>, <9,9>, <9,2>, <9,2>,
     <9,2>, <9,1.4>, <11.6,1>, <14,1>,
     <14,1>, <14,1>, <14,0>, <14,0>,
-    <14,0>, <14,0>, <0,0>, <0,0>
-
-    rotate <-90,90,0>
-    scale 0.012 
-    scale x*-42000
-    material { texture { pigment { P_Chrome5 }  } }
+    <14,0>, <14,0>, <0,0>, <0,0>    
 }              
 // TRAIN //
 // Wagon : Conducteur    
@@ -276,80 +243,35 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare AttacheWagon = Supercone ( <0.0,0.0,0.0>, 0.4, 0.6, <0.0,1,0.0>, 0.6, 0.4 )
 // Wagon : Roues
 #declare Chassis = box { <0,0,0>, <7,0.5,0.25> } 
-#declare Essieu = cone{ <0,0,0>,0.25,<0,0.20,0>,0.125 }
-#declare IntRoue = cylinder{ <0,0,0>,<0,0.3,0>,0.4 } 
+#declare Essieu = cone{ <0,0,0>,0.25, <0,0.20,0>, .125 }
+#declare IntRoue = cylinder{ <0,0,0>, <0,0.3,0>, .4 } 
 #declare Rayon = box { <0,0,0>, <0.7,0.32,0.1> }
-#declare TourRoue = cylinder{ <0,0,0>,<0,0.25,0>,0.6 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#declare TourRoue = cylinder{ <0,0,0>, <0,0.25,0>, .6 }
 // GARE //
-#declare FondationGare = box
-{
-    <0,0,0>, <24,1,20>   
-} 
-#declare QuaiGare = box
-{
-    <0,0,0>, <40,1,7>   
-}
-#declare MurGareLargeur = box
-{
-    <0,0,0>, <13,10,0.5>   
-}
-#declare MurGareLongueur = box
-{
-    <0,0,0>, <22,10,0.5>    
-} 
-#declare ToitGare = box
-{
-    <0,0,0>, <24,15,1>    
-}
+#declare FondationGare = box { <0,0,0>, <24,1,20> } 
+#declare QuaiGare = box { <0,0,0>, <40,1,7> }
+#declare MurGareLargeur = box { <0,0,0>, <13,10,.5> }
+#declare MurGareLongueur = box { <0,0,0>, <22,10,.5> } 
+#declare ToitGare = box { <0,0,0>, <24,15,1> }
+// ROUTE & PASSAGE A NIVEAU //
+// Route 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Barrière //
+#declare Barriere = cylinder { /*5.5*/ <0,0,0>, <5.5,0,0> .1 }  
 
 
 //----- ENVIRONNEMENT -----//
-// Maison
-#declare MursMaison = prism 
+// MAISON //
+#declare FondationMaison = prism 
 {      
-    -1.00 ,1.00 , 6
-       <-1.00, 0.00>,  
-       < 1.00, 0.00>, 
-       < 1.00, 1.00>, 
-       < 0.00, 2.00>, 
-       <-1.00, 1.00>, 
-       <-1.00, 0.00>
-    rotate<-90,0,0> scale<1,1,-1> translate x*1
+    -1 ,1.00 , 6
+    <-1, 0>,  
+    < 1, 0>, 
+    < 1, 1>, 
+    < 0, 2>, 
+    <-1, 1>, 
+    <-1, 0>
+    rotate x*-90 scale z*-1
 }
 #declare ToitMaison = prism 
 { 
@@ -361,13 +283,9 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     < 0.00, 2.05>, 
     <-1.05, 1.00>, 
     <-1.05, 0.95>
-    rotate<-90,0,0> scale<1,1,-1> translate x*1    
+    rotate x*-90 scale z*-1    
 }
-#declare PorteMaison = box 
-{
-    <0,0,0>, <2.5,5,0.3>
-}
-
+#declare PorteMaison = box { <0,0,0>, <2.5,5,0.3> }
 // ARBRES //              
 //Sapin         
 #declare SapinFeuilles = cone { <0,0,0> 1.5, <0,3.5,0> 0.2 }
@@ -376,7 +294,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare AcaciaFeuilles = sphere { <0,0,0> 2 } 
 #declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0> 0.3 }        
 
-/* Matériaux (création des textures) */ 
+/* Matériaux & Textures */ 
  // Bois  
 #declare VieuxChene =  material 
 {
@@ -409,7 +327,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     texture 
     {
         pigment{ color Red } 
-        normal { bumps 0.1 scale <0.015,0.01,0.015> rotate <0,0,90>} 
+        normal { bumps 0.1 scale <0.015,0.01,0.015> rotate z*90 } 
         finish { phong 0.2 phong_size 0.3 } 
     }
 }     
@@ -418,7 +336,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     texture 
     {
         pigment{ color Yellow } 
-        normal { bumps 0.15  scale <0.015,0.08,0.015> rotate <0,0,90>} 
+        normal { bumps 0.15  scale <0.015,0.08,0.015> rotate z*90 } 
         finish { phong 0.2 phong_size 0.3 } 
     }
 } 
@@ -427,7 +345,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     texture 
     {
         pigment{ color Black } 
-        normal { bumps 0.15  scale <0.015,0.08,0.015> rotate <0,0,90>} 
+        normal { bumps 0.15  scale <0.015,0.08,0.015> rotate z*90 } 
         finish { phong 0.2 phong_size 0.3 } 
     }
 } 
@@ -436,7 +354,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     texture 
     {
         pigment{ color White } 
-        normal { bumps 0.1  scale <0.025,0.08,0.015> rotate <0,0,90>} 
+        normal { bumps 0.1  scale <0.025,0.08,0.015> rotate z*90 } 
         finish { phong 0.2 phong_size 0.3 } 
     }
 } 
@@ -449,17 +367,26 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         normal { bumps 0.15  scale <0.015,0.08,0.015> rotate <0,0,90>} 
         finish { phong 0.2 phong_size 0.3 } 
     }
-}   
-//Toiture 
-#declare Toiture = material
-{ 
-    texture 
-    { 
-        pigment{ color Scarlet } 
-        finish { phong 1.0 }
-    }
+}  
+// Verdure 
+#declare Feuilles_Texture_1 = material {
+    texture
+    {
+        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
+    }     
 }
-// Brique  
+        
+#declare Feuilles_Texture_2 = material {
+    texture
+    {
+        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
+        normal { bumps 0.5 scale 0.5 }
+        finish { phong_size 0.003 }
+    }    
+}
+// Parpaing  
 #declare Brique = material 
 {  
     texture
@@ -485,45 +412,27 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         pigment 
         { 
             brick color White
-            color rgb<0.8,0.25,0.1>
-            // couleur joints, color brick
-            brick_size <1.5, .5, 1.5>
-            // format in x-,y-,z- direction
+            color rgb<0.8,0.25,0.1> // couleur joints, color brick
+            brick_size <1.5, .5, 1.5> // format in x-,y-,z- direction
             mortar 0.1 // Taille des joints
         }
-        normal {wrinkles 0.75 scale 0.01}
-        finish {ambient 0.1 diffuse 0.9 phong 0.2}    
+        normal { wrinkles 0.75 scale 0.01 }
+        finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
         scale <.5,.5,.5>
     }
 }
 #declare Beton = material 
 {
     texture
-    {
-        pigment{color rgb<1,0.9,0.8>}
-        normal{ bumps 0.5 scale 0.01}
-        finish{ phong 0.1 }
+    {             
+        pigment { color rgb <1,0.9,0.8> }
+        normal { bumps 0.5 scale 0.01 }
+        finish { phong 0.1 }
     }
 
-}
-// Verdure 
-#declare Feuilles_Texture_1 = material {
-    texture
-    {
-        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
-        normal { bumps 0.5 scale 0.5 }
-        finish { phong_size 0.003 }
-    }     
-}
-        
-#declare Feuilles_Texture_2 = material {
-    texture
-    {
-        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
-        normal { bumps 0.5 scale 0.5 }
-        finish { phong_size 0.003 }
-    }    
 } 
+// Métal
+#declare Chrome = material { texture { pigment { P_Chrome5 }  } }
 // Transparent 
 #declare VerreMinerale = material { texture { T_Glass3 } }
 #declare VerreUV = material 
@@ -544,11 +453,22 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         pigment { color White*1.1 } 
         finish { ambient 1 } 
     }
-}                          
+} 
+#declare Toiture = material
+{ 
+    texture 
+    { 
+        pigment{ color Scarlet } 
+        finish { phong 1.0 }
+    }
+}                         
+#declare DamierRougeBlanc = material { texture { pigment { checker pigment { Red } pigment { White } } } }
                           
 //**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //    
+//----- RÉSEAU FERROVIAIRE -----// 
 // RAILS // 
 #declare Traverse_VieuxChene = object { Traverse material { VieuxChene } } 
+#declare Fer_Chrome = object { Fer material { Chrome } }
 // TRAIN // 
 // Wagons
 #declare Parois_BoisRouge = object { ParoisVoyageur material { BoisRouge } }
@@ -564,8 +484,17 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare IntRoue_BoisGris = object { IntRoue material { BoisGris } } 
 #declare Rayon_BoisBlanc = object { Rayon material { BoisBlanc } } 
 #declare TourRoue_BoisNoir = object { TourRoue material { BoisNoir } }
-// Maison
-#declare MursMaison_Brique = object { MursMaison material { Brique } }
+// GARE //
+#declare MurGareLargeur_Brique = object { MurGareLargeur material { BigBrique } }
+#declare MurGareLongueur_Brique = object { MurGareLongueur material { BigBrique } }                                                                                        
+#declare ToitGare_Toiture = object { ToitGare material { Toiture } }                                                                                        
+#declare FondationGare_Beton = object { FondationGare material { Beton } }
+#declare QuaiGare_Beton = object { QuaiGare material { Beton } } 
+// ROUTE & PASSAGE A NIVEAU //
+#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }
+//----- ENVIRONNEMENT -----// 
+// MAISON //
+#declare FondationMaison_Brique = object { FondationMaison material { Brique } }
 #declare ToitMaison_Toiture = object { ToitMaison material { Toiture } } 
 #declare PorteMaison_VieuxChene = object { PorteMaison material { VieuxChene } }          
 // ARBRES //
@@ -576,28 +505,24 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
 #declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  } 
                                                                                         
-// Gare
-#declare MurGareLargeur_Brique = object { MurGareLargeur material { BigBrique } }
-#declare MurGareLongueur_Brique = object { MurGareLongueur material { BigBrique } }                                                                                        
-#declare ToitGare_Toiture = object { ToitGare material { Toiture } }                                                                                        
-#declare FondationGare_Beton = object { FondationGare material { Beton } }
-#declare QuaiGare_Beton = object { QuaiGare material { Beton } }
-
-
-
-
-
-
-                                                                                        
+                                                                            
 //**** 3 - Assemblage //  
-// RAILS //
+//----- RÉSEAU FERROVIAIRE -----//  
+// RAILS // 
+#declare LigneFer = union 
+{   
+    object { Fer_Chrome }
+    rotate <-90,90,0>
+    scale 0.012 
+    scale x*-42000
+}
 #declare Rail = union
 {                            
-     #for (i,0,2000)
-         object { Traverse_VieuxChene translate <i*0.5,0,0> }
-     #end 
-    object { Fer translate <0,0.15,0.5>}   
-    object { Fer translate <0,0.15,5>}
+    #for (i,0,2000)
+     object { Traverse_VieuxChene   rotate y*-90 translate x*.25 translate x*i*0.5 }
+    #end    
+    object { LigneFer  translate <0, 0.15,0.5> }   
+    object { LigneFer translate <0, 0.15,5> } 
 }   
 // TRAIN //     
 // Wagon : Fenetre
@@ -706,31 +631,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         object { WagonPassagers translate -x*Pas*11 }     
     #end
 }  
-
-
-
-
-
-// Maison 
-#declare Maison = union
-{    
-    difference {
-        object { MursMaison_Brique scale <7,7,7> translate <0,0,7>} 
-        object{ FenetreWagon scale 1.5 translate <1.5,2,-0.07> } 
-        object{ FenetreWagon scale 1.5 translate <10,2,-0.07> }
-        object{ FenetreWagon scale 1.5 translate <10,0,-0.07> rotate <0,0,45>}
-        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <-0.07,2,4.5> }
-        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <-0.07,2,12.25> } 
-        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <13.93,2,4.5> }
-        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <13.93,2,12.25> }
-        object{ FenetreWagon scale 1.5 translate <1.5,2,13.93> } 
-        object{ FenetreWagon scale 1.5 translate <10,2,13.93> }
-    }
-    object { ToitMaison_Toiture scale <7,7,7> rotate <0,0,0> translate <0,0,7>} 
-    object { PorteMaison_VieuxChene translate <5.75,0,-0.1>}        
-}                                                                
-
-//Gare 
+// GARE // 
 #declare Gare = union                              
 {   
     object { MurGareLongueur_Brique translate <0,0,13>}
@@ -740,9 +641,42 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     light_source { SpotGare }
     object { FondationGare_Beton translate <-1,0,-5.5>}
     object { QuaiGare_Beton translate <-9,0,-8>}
+}  
+// ROUTE & PASSAGE A NIVEAU //
+#declare PassageNiveau = union
+{
+    object { Barriere_DamierRougeBlanc } 
+    #if ((90*(1-(clock*2))) > 0)  
+     rotate z*90*(1-(clock*2))   
+    #else  
+     rotate z*0
+    #end     
 }
-
-
+//----- ENVIRONNEMENT -----//  
+// MAISON //
+#declare Maison = union
+{    
+    difference 
+    {
+        object { FondationMaison_Brique scale 7 translate <0,0,7>}    
+        union 
+        {
+            object{ FenetreWagon translate <1.5,2,-0.07> } 
+            object{ FenetreWagon translate <10,2,-0.07> }
+            object{ FenetreWagon translate <10,0,-0.07> rotate z*45 }
+            object{ FenetreWagon rotate y*90 translate <-0.07,2,4.5> }
+            object{ FenetreWagon rotate y*90 translate <-0.07,2,12.25> } 
+            object{ FenetreWagon rotate y*90 translate <13.93,2,4.5> }
+            object{ FenetreWagon rotate y*90 translate <13.93,2,12.25> }
+            object{ FenetreWagon translate <1.5,2,13.93> } 
+            object{ FenetreWagon translate <10,2,13.93> }  
+            scale 1.5 
+        }
+        
+    }
+    object { ToitMaison_Toiture scale 7 translate z*7 } 
+    object { PorteMaison_VieuxChene translate <5.75,0,-0.1> }        
+}                                                                
 // ARBRES //
 // Sapin
 #declare Sapin = union
@@ -760,29 +694,22 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 }
  					 					   
 //*** 4 - Mise en scène  //
-// SCENE //    
-//fog { Brouillard }  
-//object { Ciel }    
-// BARRIERE // 
-//object { Barriere translate <195,2,5.2> }       
-//object { Barriere rotate y*180 translate <205,2,-1.2> }
+// SCENE //
+plane { Herbe }     
+fog { Brouillard }  
+object { Ciel }  
+//----- RÉSEAU FERROVIAIRE -----//    
+ 
+/*  */
 // RAILS //
-//object { Rail translate <-700,0,-0.7>}    
+object { Rail translate <-700,0,-0.7>}    
 // TRAIN //  
-//object { Train translate <clock*250,0,0> }  
-//Maison
-//object { Maison }  
-// ARBRES //     
-//object { Sapin }
-//object { Acacia }
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-object { Gare }
-   
-                     
-
+object { Train translate <clock*250,0,0> }  
+//----- ENVIRONNEMENT -----//  
+object { Maison }       
+object { Sapin }
+object { Acacia }      
+object { Gare }    
+// BARRIERE //           
+object { PassageNiveau translate <195,2,5.2> }       
+object { PassageNiveau rotate y*180 translate <205,2,-1.2> }
