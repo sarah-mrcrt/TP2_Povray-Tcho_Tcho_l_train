@@ -38,11 +38,12 @@ camera
 {     
     right x * image_width/image_height
     up y
-    location <0,4,-15>
-    look_at<0,3,10>
+    location <11,10,-25>
+    look_at<11,0,5>
     angle 60   
 }      
-
+  
+ 
 /*     
 //Vue loin
 camera 
@@ -70,7 +71,7 @@ camera
  
 
 // Lumières // 
- // Lumière de type soleil    
+// Lumière de type soleil    
 light_source{<-1500,2000,-2500> color White} 
 
 // Spot interieur wagon
@@ -93,6 +94,29 @@ light_source{<-1500,2000,-2500> color White}
         point_at <7.5,0,2>
         tightness 10
         falloff 40
+    }            
+}
+
+// Spot Gare
+#declare SpotGare = union 
+{
+    light_source
+    { 
+        <3,9,4> 
+        color Turquoise   
+        spotlight
+        point_at<19,0,9>
+        tightness 20
+        falloff 10
+    }         
+    light_source
+    { 
+        <19,9,4> 
+        color Turquoise   
+        spotlight
+        point_at <3,0,9>
+        tightness 20
+        falloff 10
     }            
 }
 
@@ -156,11 +180,11 @@ plane {
 
                       
 // AXES X Y Z // 
-/*
+
 cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
 cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
 cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }          
-*/
+
 
 //********************************* Conception de la scène
 //**** 1 - Modelisation (formes, materiaux) // 
@@ -256,7 +280,46 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare IntRoue = cylinder{ <0,0,0>,<0,0.3,0>,0.4 } 
 #declare Rayon = box { <0,0,0>, <0.7,0.32,0.1> }
 #declare TourRoue = cylinder{ <0,0,0>,<0,0.25,0>,0.6 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // GARE //
+#declare FondationGare = box
+{
+    <0,0,0>, <24,1,20>   
+} 
+#declare QuaiGare = box
+{
+    <0,0,0>, <40,1,7>   
+}
+#declare MurGareLargeur = box
+{
+    <0,0,0>, <13,10,0.5>   
+}
+#declare MurGareLongueur = box
+{
+    <0,0,0>, <22,10,0.5>    
+} 
+#declare ToitGare = box
+{
+    <0,0,0>, <24,15,1>    
+}
 
 
 
@@ -264,6 +327,18 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+//----- ENVIRONNEMENT -----//
 // Maison
 #declare MursMaison = prism 
 {      
@@ -292,11 +367,6 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 {
     <0,0,0>, <2.5,5,0.3>
 }
-
-
-
-
-
 
 // ARBRES //              
 //Sapin         
@@ -407,6 +477,34 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         finish {ambient 0.1 diffuse 0.9 phong 0.2}    
         scale <.15,.15,.15>
     }
+} 
+#declare BigBrique = material 
+{  
+    texture
+    {
+        pigment 
+        { 
+            brick color White
+            color rgb<0.8,0.25,0.1>
+            // couleur joints, color brick
+            brick_size <1.5, .5, 1.5>
+            // format in x-,y-,z- direction
+            mortar 0.1 // Taille des joints
+        }
+        normal {wrinkles 0.75 scale 0.01}
+        finish {ambient 0.1 diffuse 0.9 phong 0.2}    
+        scale <.5,.5,.5>
+    }
+}
+#declare Beton = material 
+{
+    texture
+    {
+        pigment{color rgb<1,0.9,0.8>}
+        normal{ bumps 0.5 scale 0.01}
+        finish{ phong 0.1 }
+    }
+
 }
 // Verdure 
 #declare Feuilles_Texture_1 = material {
@@ -477,7 +575,20 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 // Acacia
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
 #declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  } 
-                      
+                                                                                        
+// Gare
+#declare MurGareLargeur_Brique = object { MurGareLargeur material { BigBrique } }
+#declare MurGareLongueur_Brique = object { MurGareLongueur material { BigBrique } }                                                                                        
+#declare ToitGare_Toiture = object { ToitGare material { Toiture } }                                                                                        
+#declare FondationGare_Beton = object { FondationGare material { Beton } }
+#declare QuaiGare_Beton = object { QuaiGare material { Beton } }
+
+
+
+
+
+
+                                                                                        
 //**** 3 - Assemblage //  
 // RAILS //
 #declare Rail = union
@@ -616,13 +727,20 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         object{ FenetreWagon scale 1.5 translate <10,2,13.93> }
     }
     object { ToitMaison_Toiture scale <7,7,7> rotate <0,0,0> translate <0,0,7>} 
-    object { PorteMaison_VieuxChene translate <5.75,0,-0.1>}     
-    
-    
+    object { PorteMaison_VieuxChene translate <5.75,0,-0.1>}        
+}                                                                
+
+//Gare 
+#declare Gare = union                              
+{   
+    object { MurGareLongueur_Brique translate <0,0,13>}
+    object { MurGareLargeur_Brique rotate y*-90 translate <0.5,0,0>}
+    object { MurGareLargeur_Brique rotate y*-90 translate <22,0,0>}
+    object { ToitGare_Toiture rotate <-89,0,0> translate <-1,9,14.25>}
+    light_source { SpotGare }
+    object { FondationGare_Beton translate <-1,0,-5.5>}
+    object { QuaiGare_Beton translate <-9,0,-8>}
 }
-
-
-
 
 
 // ARBRES //
@@ -656,6 +774,15 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 //object { Maison }  
 // ARBRES //     
 //object { Sapin }
-//object { Acacia }   
+//object { Acacia }
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+object { Gare }
+   
                      
 
