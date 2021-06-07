@@ -38,8 +38,8 @@ camera
 {     
     right x * image_width/image_height
     up y
-    location <-20,15,7>
-    look_at<0,5,7>
+    location <0,4,-15>
+    look_at<0,3,10>
     angle 60   
 }      
 
@@ -71,7 +71,8 @@ camera
 
 // Lumières // 
  // Lumière de type soleil    
-light_source{<-1500,2000,-2500> color White}
+light_source{<-1500,2000,-2500> color White} 
+
 // Spot interieur wagon
 #declare SpotIntWagon = union 
 {
@@ -155,11 +156,11 @@ plane {
 
                       
 // AXES X Y Z // 
-
+/*
 cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
 cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
 cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }          
-
+*/
 
 //********************************* Conception de la scène
 //**** 1 - Modelisation (formes, materiaux) // 
@@ -267,26 +268,29 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare MursMaison = prism 
 {      
     -1.00 ,1.00 , 6
-       <-1.00, 0.00>,  // first point
+       <-1.00, 0.00>,  
        < 1.00, 0.00>, 
        < 1.00, 1.00>, 
        < 0.00, 2.00>, 
        <-1.00, 1.00>, 
        <-1.00, 0.00>
-    rotate<-90,0,0> scale<1,1,-1> 
+    rotate<-90,0,0> scale<1,1,-1> translate x*1
 }
-
 #declare ToitMaison = prism 
 { 
     -1.10 ,1.10 , 7
-    <-1.05, 0.95>,  // first point
+    <-1.05, 0.95>,  
     < 0.00, 2.00>,  
     < 1.05, 0.95>, 
     < 1.05, 1.00>, 
     < 0.00, 2.05>, 
     <-1.05, 1.00>, 
-    <-1.05, 0.95>  // last point = first point!!!!
-    rotate<-90,0,0> scale<1,1,-1> //turns prism in z direction! Don't change this line!     
+    <-1.05, 0.95>
+    rotate<-90,0,0> scale<1,1,-1> translate x*1    
+}
+#declare PorteMaison = box 
+{
+    <0,0,0>, <2.5,5,0.3>
 }
 
 
@@ -464,7 +468,8 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare TourRoue_BoisNoir = object { TourRoue material { BoisNoir } }
 // Maison
 #declare MursMaison_Brique = object { MursMaison material { Brique } }
-#declare ToitMaison_Toiture = object { ToitMaison material { Toiture } }           
+#declare ToitMaison_Toiture = object { ToitMaison material { Toiture } } 
+#declare PorteMaison_VieuxChene = object { PorteMaison material { VieuxChene } }          
 // ARBRES //
 // Sapin
 #declare SapinFeuilles_Texture = object { SapinFeuilles material { Feuilles_Texture_1 }  }
@@ -600,9 +605,20 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 {    
     difference {
         object { MursMaison_Brique scale <7,7,7> translate <0,0,7>} 
-            object{ FenetreWagon  translate <5 , 1.5, -0.07 > }
+        object{ FenetreWagon scale 1.5 translate <1.5,2,-0.07> } 
+        object{ FenetreWagon scale 1.5 translate <10,2,-0.07> }
+        object{ FenetreWagon scale 1.5 translate <10,0,-0.07> rotate <0,0,45>}
+        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <-0.07,2,4.5> }
+        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <-0.07,2,12.25> } 
+        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <13.93,2,4.5> }
+        object{ FenetreWagon scale 1.5 rotate <0,90,0> translate <13.93,2,12.25> }
+        object{ FenetreWagon scale 1.5 translate <1.5,2,13.93> } 
+        object{ FenetreWagon scale 1.5 translate <10,2,13.93> }
     }
-    object { ToitMaison_Toiture scale <7,7,7> rotate <0,0,0> translate <0,0,7>}
+    object { ToitMaison_Toiture scale <7,7,7> rotate <0,0,0> translate <0,0,7>} 
+    object { PorteMaison_VieuxChene translate <5.75,0,-0.1>}     
+    
+    
 }
 
 
@@ -635,10 +651,11 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 // RAILS //
 //object { Rail translate <-700,0,-0.7>}    
 // TRAIN //  
-//object { Train translate <clock*250,0,0> }    
+//object { Train translate <clock*250,0,0> }  
+//Maison
+//object { Maison }  
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
                      
 
-object { Maison translate <7,0,0> }

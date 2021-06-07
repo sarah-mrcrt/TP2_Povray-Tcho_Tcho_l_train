@@ -38,8 +38,8 @@ camera
 {     
     right x * image_width/image_height
     up y
-    location <5,6,-10>
-    look_at<50,1,2>
+    location <-20,15,7>
+    look_at<0,5,7>
     angle 60   
 }      
 
@@ -71,7 +71,7 @@ camera
 
 // Lumières // 
  // Lumière de type soleil    
-light_source{<-1500,2000,2500> color White}
+light_source{<-1500,2000,-2500> color White}
 // Spot interieur wagon
 #declare SpotIntWagon = union 
 {
@@ -96,6 +96,22 @@ light_source{<-1500,2000,2500> color White}
 }
 
 // Sol 
+
+background {
+    color rgb<0.7,0.9,1>
+}  
+
+// Sol
+plane { 
+    y, 0
+    pigment {
+        checker
+        color rgb<1,1,1> 
+        color <.7,.7,.7> 
+    } 
+} 
+
+/*
 plane { 
     y, 0
     texture
@@ -104,7 +120,8 @@ plane {
         normal { bumps 0.75 scale 0.015 }
         finish { phong 0.1 }
     }
-}   
+}      
+*/
 #declare Ciel = plane
 {
     <0,1,0>,1 hollow  
@@ -242,6 +259,41 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 
 
 
+
+
+
+
+// Maison
+#declare MursMaison = prism 
+{      
+    -1.00 ,1.00 , 6
+       <-1.00, 0.00>,  // first point
+       < 1.00, 0.00>, 
+       < 1.00, 1.00>, 
+       < 0.00, 2.00>, 
+       <-1.00, 1.00>, 
+       <-1.00, 0.00>
+    rotate<-90,0,0> scale<1,1,-1> 
+}
+
+#declare ToitMaison = prism 
+{ 
+    -1.10 ,1.10 , 7
+    <-1.05, 0.95>,  // first point
+    < 0.00, 2.00>,  
+    < 1.05, 0.95>, 
+    < 1.05, 1.00>, 
+    < 0.00, 2.05>, 
+    <-1.05, 1.00>, 
+    <-1.05, 0.95>  // last point = first point!!!!
+    rotate<-90,0,0> scale<1,1,-1> //turns prism in z direction! Don't change this line!     
+}
+
+
+
+
+
+
 // ARBRES //              
 //Sapin         
 #declare SapinFeuilles = cone { <0,0,0> 1.5, <0,3.5,0> 0.2 }
@@ -323,7 +375,35 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
         normal { bumps 0.15  scale <0.015,0.08,0.015> rotate <0,0,90>} 
         finish { phong 0.2 phong_size 0.3 } 
     }
-} 
+}   
+//Toiture 
+#declare Toiture = material
+{ 
+    texture 
+    { 
+        pigment{ color Scarlet } 
+        finish { phong 1.0 }
+    }
+}
+// Brique  
+#declare Brique = material 
+{  
+    texture
+    {
+        pigment 
+        { 
+            brick color White
+            color rgb<0.8,0.25,0.1>
+            // couleur joints, color brick
+            brick_size <1.5, .5, 1.5>
+            // format in x-,y-,z- direction
+            mortar 0.1 // Taille des joints
+        }
+        normal {wrinkles 0.75 scale 0.01}
+        finish {ambient 0.1 diffuse 0.9 phong 0.2}    
+        scale <.15,.15,.15>
+    }
+}
 // Verdure 
 #declare Feuilles_Texture_1 = material {
     texture
@@ -381,7 +461,10 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare Essieu_BoisBlanc = object { Essieu material { BoisBlanc } }                        
 #declare IntRoue_BoisGris = object { IntRoue material { BoisGris } } 
 #declare Rayon_BoisBlanc = object { Rayon material { BoisBlanc } } 
-#declare TourRoue_BoisNoir = object { TourRoue material { BoisNoir } }           
+#declare TourRoue_BoisNoir = object { TourRoue material { BoisNoir } }
+// Maison
+#declare MursMaison_Brique = object { MursMaison material { Brique } }
+#declare ToitMaison_Toiture = object { ToitMaison material { Toiture } }           
 // ARBRES //
 // Sapin
 #declare SapinFeuilles_Texture = object { SapinFeuilles material { Feuilles_Texture_1 }  }
@@ -506,7 +589,26 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     #for (Pas, 1, 3, 1)
         object { WagonPassagers translate -x*Pas*11 }     
     #end
+}  
+
+
+
+
+
+// Maison 
+#declare Maison = union
+{    
+    difference {
+        object { MursMaison_Brique scale <7,7,7> translate <0,0,7>} 
+            object{ FenetreWagon  translate <5 , 1.5, -0.07 > }
+    }
+    object { ToitMaison_Toiture scale <7,7,7> rotate <0,0,0> translate <0,0,7>}
 }
+
+
+
+
+
 // ARBRES //
 // Sapin
 #declare Sapin = union
@@ -525,15 +627,18 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
  					 					   
 //*** 4 - Mise en scène  //
 // SCENE //    
-fog { Brouillard }  
-object { Ciel }    
+//fog { Brouillard }  
+//object { Ciel }    
 // BARRIERE // 
-object { Barriere translate <195,2,5.2> }       
-object { Barriere rotate y*180 translate <205,2,-1.2> }
+//object { Barriere translate <195,2,5.2> }       
+//object { Barriere rotate y*180 translate <205,2,-1.2> }
 // RAILS //
-object { Rail translate <-700,0,-0.7>}    
+//object { Rail translate <-700,0,-0.7>}    
 // TRAIN //  
-object { Train translate <clock*250,0,0> }    
+//object { Train translate <clock*250,0,0> }    
 // ARBRES //     
 //object { Sapin }
 //object { Acacia }   
+                     
+
+object { Maison translate <7,0,0> }
