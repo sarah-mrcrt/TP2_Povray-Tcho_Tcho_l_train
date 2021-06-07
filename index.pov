@@ -30,7 +30,7 @@ global_settings { assumed_gamma 2 }
 //********************************* Scène *********************************  
 //********************************* Environnement technique 
 /* Caméra */  
-    
+/*   
 camera 
 {     
     right x * image_width/image_height
@@ -39,9 +39,9 @@ camera
     look_at <11,0,5>
     angle 60   
 }      
-  
  
-/*     
+*/  
+      
 //Vue loin
 camera 
 {     
@@ -51,7 +51,7 @@ camera
     look_at<50,-5,-40>
     angle 60   
 }     
-*/   
+   
 
 
 /*
@@ -258,7 +258,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 
 // Barrière //
 #declare Barriere = cylinder { /*5.5*/ <0,0,0>, <5.5,0,0> .1 }  
-
+// box { <0,0,0>, <1,2,.4> translate <205,0,-1.2> }
 
 //----- ENVIRONNEMENT -----//
 // MAISON //
@@ -699,17 +699,21 @@ plane { Herbe }
 fog { Brouillard }  
 object { Ciel }  
 //----- RÉSEAU FERROVIAIRE -----//    
- 
-/*  */
-// RAILS //
-object { Rail translate <-700,0,-0.7>}    
-// TRAIN //  
-object { Train translate <clock*250,0,0> }  
+object { Rail translate <-700,0,-0.7> }    
+object { Train translate <clock*250,0,0> }
+object { Gare translate z*14 }    
+union {          
+    object { PassageNiveau translate <195,2,5.2> }       
+    object { PassageNiveau rotate y*180 translate <205,2,-1.2> }   
+} 
 //----- ENVIRONNEMENT -----//  
-object { Maison }       
-object { Sapin }
-object { Acacia }      
-object { Gare }    
-// BARRIERE //           
-object { PassageNiveau translate <195,2,5.2> }       
-object { PassageNiveau rotate y*180 translate <205,2,-1.2> }
+// object { Maison }       
+union
+{
+    #for (i, 0, 1000, 8)
+        object { Sapin translate z*8 translate z*i*2 } 
+        object { Acacia translate z*i*2 }    
+    #end      
+    rotate y*90
+    translate z*-5
+} 
