@@ -12,10 +12,12 @@
 
 //ANIMATION RAPIDE : +KFF10
                       
-//********************************* Réglages *******************************
+//********************************* R?glages *******************************
 #version 3.7;  
 global_settings { assumed_gamma 2 }
-#default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }   
+#default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }      
+
+#declare Random = seed (2);
 
 //********************************* Directives ****************************
 #include "colors.inc"
@@ -27,9 +29,9 @@ global_settings { assumed_gamma 2 }
 #include "glass.inc" 
 #include "metals.inc"
                                               
-//********************************* Scène *********************************  
+//********************************* Sc?ne *********************************  
 //********************************* Environnement technique 
-/* Caméra */  
+/* Cam?ra */  
 /*   
 camera 
 {     
@@ -80,11 +82,11 @@ plane
 } 
 */ 
 
-/* Lumières */ 
+/* Lumi?res */ 
 // SOLEIL //
-light_source { <-1500,2000,-2500> color White } 
+light_source { <1500,2000,2500> color White } 
 // SPOT //
-// Intérieur wagon
+// Int?rieur wagon
 #declare SpotIntWagon = union 
 {
     light_source
@@ -106,7 +108,7 @@ light_source { <-1500,2000,-2500> color White }
         falloff 40
     }            
 }
-// Intérieur Gare
+// Int?rieur Gare
 #declare SpotGare = union 
 {
     light_source
@@ -139,7 +141,7 @@ light_source { <-1500,2000,-2500> color White }
         finish { phong 0.1 }
     }
 }      
-/* Arrière-plan */
+/* Arri?re-plan */
 #declare Ciel = plane
 {
     y, 1 hollow  
@@ -172,15 +174,15 @@ light_source { <-1500,2000,-2500> color White }
     turbulence 8
 }                         
 /* AXES X,Y,Z */ 
-cylinder { 0, x*100, 0.05 pigment { red 1 }   finish { ambient 1 } }
-cylinder { 0, y*100, 0.05 pigment { green 1 } finish { ambient 1 } }
-cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }          
+cylinder { 0, x*200, 0.4 pigment { red 1 }   finish { ambient 1 } }
+cylinder { 0, y*200, 0.4 pigment { green 1 } finish { ambient 1 } }
+cylinder { 0, z*200, 0.4 pigment { blue 1 }  finish { ambient 1 } }          
 
 
-//********************************* Conception de la scène
+//********************************* Conception de la sc?ne
 //**** 1 - Modelisation (formes, materiaux) // 
-/* Forme géométrique */ 
-//----- RÉSEAU FERROVIAIRE -----//        
+/* Forme g?om?trique */ 
+//----- R?SEAU FERROVIAIRE -----//        
 // RAILS // 
 // Traverse
 #declare Traverse = box { <0, 0, 0>, < 5.5, .15, .25> }
@@ -254,11 +256,16 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare MurGareLongueur = box { <0,0,0>, <22,10,.5> } 
 #declare ToitGare = box { <0,0,0>, <24,15,1> }
 // ROUTE & PASSAGE A NIVEAU //
-// Route 
+// Route
+#declare Route = box { <0,0,0>, <11,0,200> }    
+#declare Ligne = box { <0,0,0>, <1,0,5> }
 
-// Barrière //
+
+// Barri?re //
 #declare Barriere = cylinder { /*5.5*/ <0,0,0>, <5.5,0,0> .1 }  
-// box { <0,0,0>, <1,2,.4> translate <205,0,-1.2> }
+
+#declare Support = box { <0,0,0>, <1,2.2,.4> }   
+
 
 //----- ENVIRONNEMENT -----//
 // MAISON //
@@ -294,7 +301,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare AcaciaFeuilles = sphere { <0,0,0> 2 } 
 #declare AcaciaTronc = cylinder { <0,0,0>, <0,3.5,0> 0.3 }        
 
-/* Matériaux & Textures */ 
+/* Mat?riaux & Textures */ 
  // Bois  
 #declare VieuxChene =  material 
 {
@@ -431,7 +438,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     }
 
 } 
-// Métal
+// M?tal
 #declare Chrome = material { texture { pigment { P_Chrome5 }  } }
 // Transparent 
 #declare VerreMinerale = material { texture { T_Glass3 } }
@@ -464,8 +471,8 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 }                         
 #declare DamierRougeBlanc = material { texture { pigment { checker pigment { Red } pigment { White } } } }
                           
-//**** 2 - Habillage (On met les textures sur les formes et matériaux créés) //    
-//----- RÉSEAU FERROVIAIRE -----// 
+//**** 2 - Habillage (On met les textures sur les formes et mat?riaux cr??s) //    
+//----- R?SEAU FERROVIAIRE -----// 
 // RAILS // 
 #declare Traverse_VieuxChene = object { Traverse material { VieuxChene } } 
 #declare Fer_Chrome = object { Fer material { Chrome } }
@@ -475,7 +482,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare ParoisConducteur_BoisRouge = object { ParoisConducteur material { BoisRouge } }
 #declare AttacheWagon_BoisBleu = object { AttacheWagon material { BoisBleu } }                        
 #declare Chassis_BoisJaune = object { Chassis material { BoisJaune } }
-// Fênetre
+// F?netre
 #declare Encadrement_BlancNeige = object { Encadrement material { BlancNeige } } 
 #declare Vitre_VerreMinerale = object { Vitre material { VerreMinerale } } 
 #declare Vitre_VerreUV = object { Vitre material { VerreUV } }                        
@@ -490,8 +497,11 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
 #declare ToitGare_Toiture = object { ToitGare material { Toiture } }                                                                                        
 #declare FondationGare_Beton = object { FondationGare material { Beton } }
 #declare QuaiGare_Beton = object { QuaiGare material { Beton } } 
-// ROUTE & PASSAGE A NIVEAU //
-#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }
+// ROUTE & PASSAGE A NIVEAU //  
+#declare Goudron = object { Route material { texture { pigment { Black } } } }   
+#declare Peinture = object { Ligne material { texture { pigment { White } } } }
+#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }         
+#declare Support_barriere = object { Support material { Beton } }
 //----- ENVIRONNEMENT -----// 
 // MAISON //
 #declare FondationMaison_Brique = object { FondationMaison material { Brique } }
@@ -507,7 +517,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
                                                                                         
                                                                             
 //**** 3 - Assemblage //  
-//----- RÉSEAU FERROVIAIRE -----//  
+//----- R?SEAU FERROVIAIRE -----//  
 // RAILS // 
 #declare LigneFer = union 
 {   
@@ -561,7 +571,7 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     object { IntRoueRayon translate <0,0.2,0> }
     object { TourRoue_BoisNoir translate <0,0.2,0> } 
     rotate z*-90   
-    rotate 360*clock*3*x
+    rotate 360*clock*132*x
 }
 #declare Roues = union
 {    
@@ -642,15 +652,28 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     object { FondationGare_Beton translate <-1,0,-5.5>}
     object { QuaiGare_Beton translate <-9,0,-8>}
 }  
-// ROUTE & PASSAGE A NIVEAU //
+// ROUTE & PASSAGE A NIVEAU // 
+#declare Chaussee = union {
+     object { Goudron } 
+     #for(i,0,20)
+          object { Peinture translate <5,0.01,-.22+ (i*10)> }
+     #end
+}
+
+  
+#declare Barriere_anim = union {
+     object { Barriere_DamierRougeBlanc }
+     #if ((90*(1-(clock*2))) > 0)  
+     rotate z*90*(1-(clock*2))   
+     #else  
+     rotate z*0
+     #end  
+}
+
 #declare PassageNiveau = union
 {
-    object { Barriere_DamierRougeBlanc } 
-    #if ((90*(1-(clock*2))) > 0)  
-     rotate z*90*(1-(clock*2))   
-    #else  
-     rotate z*0
-    #end     
+    object { Barriere_anim translate <0.5,0,0.1> }  
+    object { Support_barriere  translate y*-2 } 
 }
 //----- ENVIRONNEMENT -----//  
 // MAISON //
@@ -676,7 +699,17 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     }
     object { ToitMaison_Toiture scale 7 translate z*7 } 
     object { PorteMaison_VieuxChene translate <5.75,0,-0.1> }        
-}                                                                
+}    
+
+
+#declare Maisons = union {
+#for(i,0,6) 
+          object { Maison rotate y*-90   translate <190,0,-100> translate z*i*40 } 
+            
+#end  
+}  
+       
+                                                               
 // ARBRES //
 // Sapin
 #declare Sapin = union
@@ -692,28 +725,39 @@ cylinder { 0, z*100, 0.05 pigment { blue 1 }  finish { ambient 1 } }
     object { AcaciaFeuilles_Texture translate <0,4,0> }    
     object { AcaciaTronc_SoucheArbre }
 }
- 					 					   
-//*** 4 - Mise en scène  //
+ 	
+
+#declare Arbres = union {
+    #for (i, 0, 75) 
+        #declare X = rand(Random)*220;
+        #declare Z = rand(Random)*200 -100;
+        #if(!((X>170 & X<205) | (Z>-2 & Z<8)))
+             object { Sapin  translate <X,0,Z> } 
+        #end   
+        #declare X = rand(Random)*220;
+        #declare Z = rand(Random)*200-100;
+        #if(!((X>170 & X<205) | (Z>-2 & Z<8)))
+             object { Acacia  translate <X,0,Z> } 
+        #end                
+    #end      
+}   
+				 					   
+//*** 4 - Mise en sc?ne  //
 // SCENE //
 plane { Herbe }     
 fog { Brouillard }  
-object { Ciel }  
-//----- RÉSEAU FERROVIAIRE -----//    
+object { Ciel }         
+//----- R?SEAU FERROVIAIRE -----//    
 object { Rail translate <-700,0,-0.7> }    
 object { Train translate <clock*250,0,0> }
-object { Gare translate z*14 }    
+object { Gare translate z*14 }
+object { Chaussee translate <194.5,0.01,-100> }    
 union {          
     object { PassageNiveau translate <195,2,5.2> }       
     object { PassageNiveau rotate y*180 translate <205,2,-1.2> }   
 } 
-//----- ENVIRONNEMENT -----//  
-// object { Maison }       
-union
-{
-    #for (i, 0, 1000, 8)
-        object { Sapin translate z*8 translate z*i*2 } 
-        object { Acacia translate z*i*2 }    
-    #end      
-    rotate y*90
-    translate z*-5
-} 
+//----- ENVIRONNEMENT -----// 
+object { Maisons }
+object { Arbres }
+
+                                                                                
