@@ -12,7 +12,7 @@
 
 //ANIMATION RAPIDE : +KFF10
                       
-//********************************* R?glages *******************************
+//********************************* Reglages *******************************
 #version 3.7;  
 global_settings { assumed_gamma 2 }
 #default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }      
@@ -29,11 +29,10 @@ global_settings { assumed_gamma 2 }
 #include "glass.inc" 
 #include "metals.inc"
                                               
-//********************************* Sc?ne *********************************  
+//********************************* Scene *********************************  
 //********************************* Environnement technique 
 /* Camera */  
- 
-camera 
+ camera 
 {     
     right x * image_width/image_height
     up y
@@ -41,8 +40,6 @@ camera
     look_at<70,-5,-70>
     angle 70 
 }      
-
-  
 /*        
 //Vue loin
 camera 
@@ -70,7 +67,6 @@ plane
     } 
 } 
 */
-
 /* Lumieres */ 
 // SOLEIL //
 light_source { <1500,2000,2500> color White shadowless } 
@@ -248,11 +244,8 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 // Route
 #declare Route = box { <0,0,0>, <11,0,200> }    
 #declare Ligne = box { <0,0,0>, <1,0,5> }
-
-
 // Barriere //
-#declare Barriere = cylinder { /*5.5*/ <0,0,0>, <7,0,0> .15 }  
-
+#declare Barriere = cylinder { <0,0,0>, <7,0,0> .15 }
 #declare Support = box { <0,0,0>, <1,2.2,.4> }   
 
 
@@ -401,7 +394,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         scale <.15,.15,.15>
     }  
 } 
- 
 #declare BigBrique = material 
 {  
     texture
@@ -503,8 +495,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare SapinTronc_SoucheArbre = object { SapinTronc material { SoucheArbre }  } 
 // Acacia
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
-#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  } 
-                                                                                        
+#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  }                                                                                     
                                                                             
 //**** 3 - Assemblage //  
 //----- RESEAU FERROVIAIRE -----//  
@@ -684,15 +675,11 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     object { PorteMaison_VieuxChene translate <5.75,0,-0.1> }        
 }    
 
-
 #declare Maisons = union {
-#for(i,0,6) 
-          object { Maison rotate y*-90   translate <190,0,-100> translate z*i*40 } 
-            
-#end  
-}  
-       
-                                                               
+    #for(i,0,6) 
+        object { Maison rotate y*-90 translate <190,0,-100> translate z*i*40 } 
+    #end  
+}                                                                      
 // ARBRES //
 // Sapin
 #declare Sapin = union
@@ -707,9 +694,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 {
     object { AcaciaFeuilles_Texture translate <0,4,0> }    
     object { AcaciaTronc_SoucheArbre }
-}
- 	
-
+}	
 #declare Arbres = union {
     #for (i, 0, 75) 
         #declare X = rand(Random)*220;
