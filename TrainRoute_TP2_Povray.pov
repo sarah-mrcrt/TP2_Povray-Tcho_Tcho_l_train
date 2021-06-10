@@ -1,14 +1,15 @@
-/** @file index.pov
+/** 
+* @file TrainRoute_TP2_Povray.pov
 * Travaux pratiques d'infographie
 * @author Alexandre Lavaud & Sarah Mauriaucourt
 * @date 19/05/2020 - 10/06/2021
 * 
 * @animationImages +KFF250
-* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
-* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
+* @animationVideo ffmpeg -r 25 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
+* @animationVideo ffmpeg -r 25 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
 *
 * Structuration des scripts
-*/                      
+**/                      
                       
 //********************************* Reglages *******************************
 #version 3.7;  
