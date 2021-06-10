@@ -9,15 +9,11 @@
 *
 * Structuration des scripts
 */                      
-
-//ANIMATION RAPIDE : +KFF10
                       
 //********************************* Reglages *******************************
 #version 3.7;  
 global_settings { assumed_gamma 2 }
 #default { finish { ambient 0.1 diffuse 0.9 conserve_energy } }      
-
-#declare Random = seed (2);
 
 //********************************* Directives ****************************
 #include "colors.inc"
@@ -28,7 +24,7 @@ global_settings { assumed_gamma 2 }
 #include "woods.inc"
 #include "glass.inc" 
 #include "metals.inc"
-                                              
+#declare Random = seed (2);                                              
 //********************************* Scene *********************************  
 //********************************* Environnement technique 
 /* Camera */  
@@ -361,7 +357,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare Feuilles_Texture_1 = material {
     texture
     {
-        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
+        pigment { color rgbf <0.2,0.5,0, 0.1>*0.75 }
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
     }     
@@ -370,7 +366,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare Feuilles_Texture_2 = material {
     texture
     {
-        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
+        pigment{ color rgbf <0.2,0.5,0, 0.1>*0.75}
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
     }    
@@ -383,14 +379,14 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         pigment 
         { 
             brick color White
-            color rgb<0.8,0.25,0.1>
+            color rgb <0.8,0.25,0.1>
             // couleur joints, color brick
             brick_size <1.5, .5, 1.5>
             // format in x-,y-,z- direction
             mortar 0.1 // Taille des joints
         }
-        normal {wrinkles 0.75 scale 0.01}
-        finish {ambient 0.1 diffuse 0.9 phong 0.2}    
+        normal { wrinkles 0.75 scale 0.01 }
+        finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
         scale <.15,.15,.15>
     }  
 } 
@@ -401,9 +397,9 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         pigment 
         { 
             brick color White
-            color rgb<0.8,0.25,0.1> // couleur joints, color brick
-            brick_size <1.5, .5, 1.5> // format in x-,y-,z- direction
-            mortar 0.1 // Taille des joints
+            color rgb <0.8,0.25,0.1> 
+            brick_size <1.5, .5, 1.5>
+            mortar 0.1
         }
         normal { wrinkles 0.75 scale 0.01 }
         finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
@@ -453,7 +449,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 }                         
 #declare DamierRougeBlanc = material { texture { pigment { checker pigment { Red } pigment { White } } } }
                           
-//**** 2 - Habillage (On met les textures sur les formes et materiaux crees) //    
+//**** 2 - Habillage (Textures sur les formes et materiaux crees) //    
 //----- RESEAU FERROVIAIRE -----// 
 // RAILS // 
 #declare Traverse_VieuxChene = object { Traverse material { VieuxChene } } 
@@ -480,9 +476,11 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare FondationGare_Beton = object { FondationGare material { Beton } }
 #declare QuaiGare_Beton = object { QuaiGare material { Beton } } 
 // ROUTE & PASSAGE A NIVEAU //  
+// Route
 #declare Goudron = object { Route material { texture { pigment { Black } } } }   
 #declare Peinture = object { Ligne material { texture { pigment { White } } } }
-#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }         
+#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }     
+// Passage a niveau    
 #declare Support_barriere = object { Support material { Beton } }
 //----- ENVIRONNEMENT -----// 
 // MAISON //
@@ -510,7 +508,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare Rail = union
 {                            
     #for (i,0,2000)
-     object { Traverse_VieuxChene   rotate y*-90 translate x*.25 translate x*i*0.5 }
+        object { Traverse_VieuxChene   rotate y*-90 translate x*.25 translate x*i*0.5 }
     #end    
     object { LigneFer  translate <0, 0.15,0.5> }   
     object { LigneFer translate <0, 0.15,5> } 
@@ -634,23 +632,23 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     object { QuaiGare_Beton translate <-9,0,-8>}
 }  
 // ROUTE & PASSAGE A NIVEAU // 
+// Route
 #declare Chaussee = union {
      object { Goudron } 
      #for(i,0,20)
-          object { Peinture translate <5,0.01,-.22+ (i*10)> }
+          object { Peinture translate <5,0.01,-.22+(i*10)> }
      #end
-}
-
-  
-#declare Barriere_anim = union {
+}       
+// Passage à niveau
+#declare Barriere_anim = union 
+{
      object { Barriere_DamierRougeBlanc }
      #if ((90*(1-(clock*2))) > 0)  
-     rotate z*90*(1-(clock*2))   
+        rotate z*90*(1-(clock*2))   
      #else  
-     rotate z*0
+        rotate z*0
      #end  
 }
-
 #declare PassageNiveau = union
 {
     object { Barriere_anim translate <0.5,0,0.2> }  
@@ -663,19 +661,19 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     difference 
     {
         object { FondationMaison_Brique scale 7 translate z*7 }    
-        object{ FenetreWagon scale 1.5 translate <1.5,2,-0.07> } 
-        object{ FenetreWagon scale 1.5 translate <10,2,-0.07> }
-        object{ FenetreWagon scale 1.5 translate <10,0,-0.07> rotate z*45 }
-        object{ FenetreWagon scale 1.5 rotate y*90 translate <-0.07,2,4.5> }
-        object{ FenetreWagon scale 1.5 rotate y*90 translate <-0.07,2,12.25> } 
-        object{ FenetreWagon scale 1.5 translate <1.5,2,13.93> } 
-        object{ FenetreWagon scale 1.5 translate <10,2,13.93> }  
+        object { FenetreWagon scale 1.5 translate <1.5,2,-0.07> } 
+        object { FenetreWagon scale 1.5 translate <10,2,-0.07> }
+        object { FenetreWagon scale 1.5 translate <10,0,-0.07> rotate z*45 }
+        object { FenetreWagon scale 1.5 rotate y*90 translate <-0.07,2,4.5> }
+        object { FenetreWagon scale 1.5 rotate y*90 translate <-0.07,2,12.25> } 
+        object { FenetreWagon scale 1.5 translate <1.5,2,13.93> } 
+        object { FenetreWagon scale 1.5 translate <10,2,13.93> }  
     }
     object { ToitMaison_Toiture scale 7 translate z*7 } 
     object { PorteMaison_VieuxChene translate <5.75,0,-0.1> }        
 }    
-
-#declare Maisons = union {
+#declare Maisons = union 
+{
     #for(i,0,6) 
         object { Maison rotate y*-90 translate <190,0,-100> translate z*i*40 } 
     #end  
@@ -719,11 +717,9 @@ object { Ciel }
 object { Rail translate <-700,0,-0.7> }    
 object { Train translate <clock*250,0,0> }
 object { Gare translate z*14 }
-object { Chaussee translate <194.5,0.01,-100> }    
-union {          
-    object { PassageNiveau translate <195,2,5.2> }       
-    object { PassageNiveau rotate y*180 translate <205,2,-1.2> }   
-} 
+object { Chaussee translate <194.5,0.01,-100> }             
+object { PassageNiveau translate <195,2,5.2> }       
+object { PassageNiveau rotate y*180 translate <205,2,-1.2> }   
 //----- ENVIRONNEMENT -----// 
 object { Maisons }
 object { Arbres }   
