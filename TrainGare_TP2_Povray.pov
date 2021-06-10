@@ -34,13 +34,13 @@ camera
 {     
     right x * image_width/image_height
     up y
-    location <-30,10,-25>
-    look_at <10,0,5>
-    angle 60   
-}      
+    location <-15,2,-3>
+    look_at <8,3,9>
+    angle 70   
+}     
  /* Lumieres */ 
 // SOLEIL //
-light_source { <-1500,2000,-2500> color White } 
+light_source { <-1500,2000,-2500> color White shadowless } 
 // SPOT //
 // Interieur wagon
 #declare SpotIntWagon = union 
