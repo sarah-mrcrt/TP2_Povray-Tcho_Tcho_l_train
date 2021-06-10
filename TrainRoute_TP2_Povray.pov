@@ -24,8 +24,10 @@ global_settings { assumed_gamma 2 }
 #include "woods.inc"
 #include "glass.inc" 
 #include "metals.inc"
-#declare Random = seed (2);                                              
+                                             
 //********************************* Scene *********************************  
+//********************************* Variables  
+#declare Random = seed (2); 
 //********************************* Environnement technique 
 /* Camera */  
  camera 
@@ -35,34 +37,7 @@ global_settings { assumed_gamma 2 }
     location <220,3,7>
     look_at<70,-5,-70>
     angle 70 
-}      
-/*        
-//Vue loin
-camera 
-{     
-    right x * image_width/image_height
-    up y
-    location <250,3,10>
-    look_at<70,-5,-40>
-    angle 60   
-}     
-*/   
-
- 
-/*  
-background {
-    color rgb<0.7,0.9,1>
-}  
-plane 
-{ 
-    y, 0
-    pigment {
-        checker
-        color rgb<1,1,1> 
-        color <.7,.7,.7> 
-    } 
-} 
-*/
+}            
 /* Lumieres */ 
 // SOLEIL //
 light_source { <1500,2000,2500> color White shadowless } 
@@ -153,12 +128,7 @@ light_source { <1500,2000,2500> color White shadowless }
     fog_offset 0.5
     fog_alt 5
     turbulence 8
-}                         
-/* AXES X,Y,Z */ 
-cylinder { 0, x*200, 0.1 pigment { red 1 }   finish { ambient 1 } }
-cylinder { 0, y*200, 0.1 pigment { green 1 } finish { ambient 1 } }
-cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }          
-                
+}                                                
 
 //********************************* Conception de la sc?ne
 //**** 1 - Modelisation (formes, materiaux) // 
@@ -243,8 +213,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 // Barriere //
 #declare Barriere = cylinder { <0,0,0>, <7,0,0> .15 }
 #declare Support = box { <0,0,0>, <1,2.2,.4> }   
-
-
 //----- ENVIRONNEMENT -----//
 // MAISON //
 #declare FondationMaison = prism 
@@ -343,7 +311,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         finish { phong 0.2 phong_size 0.3 } 
     }
 } 
-
 #declare BoisGris =  material 
 {
     texture 
@@ -387,7 +354,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         }
         normal { wrinkles 0.75 scale 0.01 }
         finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
-        scale <.15,.15,.15>
+        scale .15 
     }  
 } 
 #declare BigBrique = material 
@@ -414,7 +381,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         normal { bumps 0.5 scale 0.01 }
         finish { phong 0.1 }
     }
-
 } 
 // Metal
 #declare Chrome = material { texture { pigment { P_Chrome5 }  } }

@@ -4,11 +4,11 @@
 * @date 19/05/2020 - 10/06/2021
 * 
 * @animationImages +KFF250
-* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
-* @animationVideo ffmpeg -r 10 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
+* @animationVideo ffmpeg -r 25 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainRoute_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi 
+* @animationVideo ffmpeg -r 25 -f image2 -i index%03d.png -c:v libx264 -b:v 1M TrainGare_TP2_Povray-Alexandre_LAVAUD-Sarah_MAURIAUCOURT.avi        
 *
 * Structuration des scripts
-*/                      
+*/      
                       
 //********************************* Reglages *******************************
 #version 3.7;  
@@ -24,48 +24,23 @@ global_settings { assumed_gamma 2 }
 #include "woods.inc"
 #include "glass.inc" 
 #include "metals.inc"
-#declare Random = seed (2);                                              
+                                              
 //********************************* Scene *********************************  
+//********************************* Variables  
+#declare Random = seed (2);  
 //********************************* Environnement technique 
 /* Camera */  
- camera 
-{     
-    right x * image_width/image_height
-    up y
-    location <220,3,7>
-    look_at<70,-5,-70>
-    angle 70 
-}      
-/*        
-//Vue loin
 camera 
 {     
     right x * image_width/image_height
     up y
-    location <250,3,10>
-    look_at<70,-5,-40>
+    location <-30,10,-25>
+    look_at <10,0,5>
     angle 60   
-}     
-*/   
-
- 
-/*  
-background {
-    color rgb<0.7,0.9,1>
-}  
-plane 
-{ 
-    y, 0
-    pigment {
-        checker
-        color rgb<1,1,1> 
-        color <.7,.7,.7> 
-    } 
-} 
-*/
-/* Lumieres */ 
+}      
+ /* Lumieres */ 
 // SOLEIL //
-light_source { <1500,2000,2500> color White shadowless } 
+light_source { <-1500,2000,-2500> color White } 
 // SPOT //
 // Interieur wagon
 #declare SpotIntWagon = union 
@@ -153,12 +128,10 @@ light_source { <1500,2000,2500> color White shadowless }
     fog_offset 0.5
     fog_alt 5
     turbulence 8
-}                         
-/* AXES X,Y,Z */ 
-cylinder { 0, x*200, 0.1 pigment { red 1 }   finish { ambient 1 } }
-cylinder { 0, y*200, 0.1 pigment { green 1 } finish { ambient 1 } }
-cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }          
-                
+} 
+#declare PositionCourante = <0,0,0>;
+#declare VitesseCourante = <0,0,0>;
+#declare IS = 0 ;          
 
 //********************************* Conception de la sc?ne
 //**** 1 - Modelisation (formes, materiaux) // 
@@ -240,11 +213,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 // Route
 #declare Route = box { <0,0,0>, <11,0,200> }    
 #declare Ligne = box { <0,0,0>, <1,0,5> }
-// Barriere //
-#declare Barriere = cylinder { <0,0,0>, <7,0,0> .15 }
-#declare Support = box { <0,0,0>, <1,2.2,.4> }   
-
-
 //----- ENVIRONNEMENT -----//
 // MAISON //
 #declare FondationMaison = prism 
@@ -357,7 +325,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare Feuilles_Texture_1 = material {
     texture
     {
-        pigment { color rgbf <0.2,0.5,0, 0.1>*0.75 }
+        pigment { color rgbf<0.2,0.5,0, 0.1>*0.75 }
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
     }     
@@ -366,7 +334,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare Feuilles_Texture_2 = material {
     texture
     {
-        pigment{ color rgbf <0.2,0.5,0, 0.1>*0.75}
+        pigment{ color rgbf<0.2,0.5,0, 0.1>*0.75}
         normal { bumps 0.5 scale 0.5 }
         finish { phong_size 0.003 }
     }    
@@ -379,7 +347,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         pigment 
         { 
             brick color White
-            color rgb <0.8,0.25,0.1>
+            color rgb<0.8,0.25,0.1>
             // couleur joints, color brick
             brick_size <1.5, .5, 1.5>
             // format in x-,y-,z- direction
@@ -387,8 +355,9 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         }
         normal { wrinkles 0.75 scale 0.01 }
         finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
-        scale <.15,.15,.15>
-    }  
+        scale .15 
+        rotate y*180
+    }
 } 
 #declare BigBrique = material 
 {  
@@ -397,9 +366,9 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
         pigment 
         { 
             brick color White
-            color rgb <0.8,0.25,0.1> 
-            brick_size <1.5, .5, 1.5>
-            mortar 0.1
+            color rgb<0.8,0.25,0.1> 
+            brick_size <1.5, .5, 1.5> 
+            mortar 0.1 
         }
         normal { wrinkles 0.75 scale 0.01 }
         finish { ambient 0.1 diffuse 0.9 phong 0.2 }    
@@ -449,8 +418,8 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 }                         
 #declare DamierRougeBlanc = material { texture { pigment { checker pigment { Red } pigment { White } } } }
                           
-//**** 2 - Habillage (Textures sur les formes et materiaux crees) //    
-//----- RESEAU FERROVIAIRE -----// 
+//**** 2 - Habillage (On met les textures sur les formes et mat?riaux cr??s) //    
+//----- R?SEAU FERROVIAIRE -----// 
 // RAILS // 
 #declare Traverse_VieuxChene = object { Traverse material { VieuxChene } } 
 #declare Fer_Chrome = object { Fer material { Chrome } }
@@ -479,9 +448,6 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 // Route
 #declare Goudron = object { Route material { texture { pigment { Black } } } }   
 #declare Peinture = object { Ligne material { texture { pigment { White } } } }
-#declare Barriere_DamierRougeBlanc = object { Barriere material { DamierRougeBlanc } }     
-// Passage a niveau    
-#declare Support_barriere = object { Support material { Beton } }
 //----- ENVIRONNEMENT -----// 
 // MAISON //
 #declare FondationMaison_Brique = object { FondationMaison material { Brique } }
@@ -493,8 +459,8 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 #declare SapinTronc_SoucheArbre = object { SapinTronc material { SoucheArbre }  } 
 // Acacia
 #declare AcaciaFeuilles_Texture = object { AcaciaFeuilles material { Feuilles_Texture_2 }  }
-#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  }                                                                                     
-                                                                            
+#declare AcaciaTronc_SoucheArbre = object { AcaciaTronc material { SoucheArbre }  } 
+                                                                                        
 //**** 3 - Assemblage //  
 //----- RESEAU FERROVIAIRE -----//  
 // RAILS // 
@@ -550,7 +516,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     object { IntRoueRayon translate <0,0.2,0> }
     object { TourRoue_BoisNoir translate <0,0.2,0> } 
     rotate z*-90   
-    rotate 360*clock*132*x
+    rotate -360*clock*132*x
 }
 #declare Roues = union
 {    
@@ -618,7 +584,9 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     object { WagonConducteur } 
     #for (Pas, 1, 3, 1)
         object { WagonPassagers translate -x*Pas*11 }     
-    #end
+    #end      
+    rotate y*180 
+    translate <-3,0,4>
 }  
 // GARE // 
 #declare Gare = union                              
@@ -632,26 +600,11 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     object { QuaiGare_Beton translate <-9,0,-8>}
 }  
 // ROUTE & PASSAGE A NIVEAU // 
-// Route
 #declare Chaussee = union {
      object { Goudron } 
      #for(i,0,20)
           object { Peinture translate <5,0.01,-.22+ (i*10)> }
      #end
-}       
-// Passage à niveau
-#declare Barriere_anim = union {
-     object { Barriere_DamierRougeBlanc }
-     #if ((90*(1-(clock*2))) > 0)  
-     rotate z*90*(1-(clock*2))   
-     #else  
-     rotate z*0
-     #end  
-}
-#declare PassageNiveau = union
-{
-    object { Barriere_anim translate <0.5,0,0.2> }  
-    object { Support_barriere  translate y*-2 } 
 }
 //----- ENVIRONNEMENT -----//  
 // MAISON //
@@ -675,8 +628,8 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 {
     #for(i,0,6) 
         object { Maison rotate y*-90 translate <190,0,-100> translate z*i*40 } 
-    #end  
-}                                                                      
+    #end    
+}                                                             
 // ARBRES //
 // Sapin
 #declare Sapin = union
@@ -691,7 +644,7 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
 {
     object { AcaciaFeuilles_Texture translate <0,4,0> }    
     object { AcaciaTronc_SoucheArbre }
-}	
+}
 #declare Arbres = union {
     #for (i, 0, 75) 
         #declare X = rand(Random)*220;
@@ -707,19 +660,54 @@ cylinder { 0, z*200, 0.1 pigment { blue 1 }  finish { ambient 1 } }
     #end      
 }   
 				 					   
-//*** 4 - Mise en scene  //
+//*** 4 - Mise en sc?ne  //
 // SCENE //
 plane { Herbe }     
 fog { Brouillard }  
 object { Ciel }         
 //----- RESEAU FERROVIAIRE -----//    
+#if (!clock_on | frame_number = 1)
+    #declare PositionCourante = <200,0,0>;
+    #declare VitesseCourante = <-100,0,0>;
+    #declare IS = 0 ;
+#else
+    #fopen F "anim.txt" read
+    #if (defined(F))
+        #read (F,PositionCourante,VitesseCourante,IS)
+    #end
+    #fclose F
+#end
+#declare DeltaT = 1/25;
+#declare Acceleration = <20,0,0>;
+#if (PositionCourante.x < 7.1)
+    #declare VitesseFuture = <0,0,0>;
+    #declare PositionFuture = PositionCourante + DeltaT * (VitesseCourante + VitesseFuture)/2;
+#else
+    #if (PositionCourante.x  < 135)
+        #declare VitesseFuture = VitesseCourante + DeltaT *2*Acceleration;
+        #declare PositionFuture = PositionCourante + DeltaT * (VitesseCourante + VitesseFuture)/2;
+        
+    #else
+        #declare VitesseFuture = VitesseCourante;
+        #declare PositionFuture = PositionCourante + DeltaT * (VitesseCourante + VitesseFuture)/2;
+    #end
+#end 
+#debug "position et vitesse ="
+#debug vstr (3, PositionCourante, ",", 1, 3)
+#debug "\n"
+#debug vstr (3, VitesseCourante, ",", 1, 3)
+#debug "\n"        
+#fopen F "anim.txt" write
+#if (defined(F))
+    #write (F, PositionFuture, ",", VitesseFuture, ",", IS, "\n")
+#end
+#fclose F
+object { Train translate PositionCourante }
 object { Rail translate <-700,0,-0.7> }    
-object { Train translate <clock*250,0,0> }
 object { Gare translate z*14 }
-object { Chaussee translate <194.5,0.01,-100> }             
-object { PassageNiveau translate <195,2,5.2> }       
-object { PassageNiveau rotate y*180 translate <205,2,-1.2> }   
+object { Chaussee translate <194.5,0.01,-100> }    
 //----- ENVIRONNEMENT -----// 
 object { Maisons }
-object { Arbres }   
-                                                                          
+object { Arbres }
+
+                                                                                
